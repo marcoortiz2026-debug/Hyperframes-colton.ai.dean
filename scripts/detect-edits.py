@@ -34,7 +34,7 @@ RETAKE_CUES = [
     r"\btake (two|2|three|3)\b",
     r"^(wait|sorry|no)\b",
 ]
-MATCH_WORDS = 3  # leading words two segments must share to count as takes of one line
+RETAKE_WINDOW = 45.0  # seconds after a segment in which a re-take of it is looked for
 
 
 ONES = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split()
@@ -110,9 +110,37 @@ def assign_words(segs, words):
         s["tokens"] = [norm(w["text"]) for w in s["words"] if norm(w["text"])]
 
 
-def same_line(a, b):
-    n = min(MATCH_WORDS, len(a), len(b))
-    return n >= MATCH_WORDS and a[:n] == b[:n]
+def retaken(i, segs):
+    """True if most of segment i is said again, in order, shortly after it.
+
+    Retakes rarely restart with identical words ("a reason why..." then
+    "There's a reason why..."), and a later take is often split across several
+    pause-separated segments, so compare against the following speech joined
+    together and require a long shared run, not a shared opening.
+    """
+    a = segs[i]["tokens"]
+    if len(a) < 3:
+        return False
+    later = []
+    for s in segs[i + 1:]:
+        if s["start"] > segs[i]["end"] + RETAKE_WINDOW or len(later) > 2 * len(a) + 10:
+            break
+        later.extend(s["tokens"])
+    m = difflib.SequenceMatcher(None, a, later, autojunk=False).find_longest_match(0, len(a), 0, len(later))
+    return m.size >= max(3, -(-len(a) // 2))
+
+
+def trim_boundary_repeats(kept):
+    """'...with the results, / with the results that...': drop the repeated
+    run (2-6 words) from the end of the earlier segment."""
+    for s, nxt in zip(kept, kept[1:]):
+        ws = [w for w in s["words"] if norm(w["text"])]
+        head = nxt["tokens"]
+        for n in range(min(6, len(ws), len(head)), 1, -1):
+            if [norm(w["text"]) for w in ws[-n:]] == head[:n]:
+                for w in ws[-n:]:
+                    w["cut"] = "repeated across pause"
+                break
 
 
 def mark_off_script(kept, script_tokens):
@@ -148,7 +176,7 @@ def plan(segs, max_pause, pad, script_tokens=None):
             s["drop"] = "no speech (noise/breath)"
         elif any(re.search(p, " ".join(toks)) for p in RETAKE_CUES):
             s["drop"] = "retake cue"
-        elif any(same_line(toks, later["tokens"]) for later in segs[i + 1:]):
+        elif retaken(i, segs):
             s["drop"] = "flubbed take (re-said later)"
         elif all(t in FILLERS for t in toks):
             s["drop"] = "filler only"
@@ -156,7 +184,7 @@ def plan(segs, max_pause, pad, script_tokens=None):
     # segment, then the clean retake: catch it via the line it restarts.
     for i, s in enumerate(segs):
         if "drop" not in s and i + 1 < len(segs) and segs[i + 1].get("drop") == "retake cue":
-            if any(same_line(s["tokens"], later["tokens"]) for later in segs[i + 2:]):
+            if retaken(i, segs):
                 s["drop"] = "flubbed take (re-said later)"
 
     kept = [s for s in segs if "drop" not in s]
@@ -165,6 +193,7 @@ def plan(segs, max_pause, pad, script_tokens=None):
             cuts.append({"start": round(s["start"], 3), "end": round(s["end"], 3),
                          "reason": s["drop"], "text": s["text"]})
 
+    trim_boundary_repeats(kept)
     review = mark_off_script(kept, script_tokens) if script_tokens else []
 
     # Fillers / stumbles inside kept segments: cut from the end of the previous
