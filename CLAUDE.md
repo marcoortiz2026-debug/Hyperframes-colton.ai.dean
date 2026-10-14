@@ -302,6 +302,18 @@ ffmpeg -i raw.mov -c:v libx264 -preset medium -crf 20 -c:a aac -b:a 192k -movfla
 
 Keeps `assets/` light and avoids codec issues during capture. Use `npx hyperframes doctor` if a render fails partway.
 
+### Rough cut from raw footage (when CREATOR.md says the assistant does the cutting)
+
+The CLI has no cut-detection command; `scripts/detect-edits.py` does it. It takes pause boundaries from ffmpeg silence detection, because ASR word timestamps stretch across silences (Whisper's badly, Parakeet's slightly). It reads the transcript to spot fillers, retake cues ("let me start that again") and repeated takes. The last take of a repeated line wins.
+
+```bash
+npx hyperframes transcribe assets/raw.mp4 --engine parakeet --json      # more accurate word starts than whisper
+python3 ../../scripts/detect-edits.py assets/raw.mp4 transcript.json \
+    --script inbox/script/script.txt --out edit-plan.json --render assets/a-roll.mp4
+```
+
+Always pass `--script` when you have one. Short fillers like "uh" are often transcribed as a real word ("a"), and only the script diff catches them. Off-script lines longer than 2 words are listed under `review`, never auto-cut, because they may be deliberate ad-libs. Re-transcribe the rough cut and confirm it reads like the script before building visuals on it. Then transcribe `a-roll.mp4` again for caption timing.
+
 ## Prompting Shorthand (what the `/hyperframes` skill understands)
 
 - **Motion easing:** smooth / snappy / bouncy / springy / dramatic / dreamy

@@ -8,6 +8,13 @@ fi
 
 cd "$CLAUDE_PROJECT_DIR"
 
+# Node's built-in fetch ignores HTTPS_PROXY unless told otherwise; hyperframes
+# uses it for model downloads (Parakeet, Whisper fallback).
+export NODE_USE_ENV_PROXY=1
+if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
+  echo "export NODE_USE_ENV_PROXY=1" >> "$CLAUDE_ENV_FILE"
+fi
+
 # Workspace deps: Playwright, local GSAP + Inter (CDNs may be blocked in the sandbox)
 npm install --no-audit --no-fund
 
@@ -39,3 +46,8 @@ if [ ! -s "$HOME/.cache/hyperframes/whisper/models/ggml-small.en.bin" ]; then
     && mv "$HOME/.cache/hyperframes/whisper/models/ggml-small.en.bin.tmp" "$HOME/.cache/hyperframes/whisper/models/ggml-small.en.bin" \
     || echo "session-start: Whisper model download skipped (huggingface.co not reachable)" >&2
 fi
+
+# Parakeet ASR (~640 MB): accurate word start times, used by scripts/detect-edits.py
+# for rough cuts. Background so session start isn't delayed; no-op once installed.
+nohup npx --yes hyperframes models install parakeet \
+  >"$HOME/.cache/hyperframes/parakeet-install.log" 2>&1 &
