@@ -45,3 +45,4 @@ _reference/creator-library/**/frames/
 video-projects/*/inbox/footage/*
 video-projects/*/inbox/references/*
 !video-projects/*/inbox/**/.gitkeep
+__pycache__/
