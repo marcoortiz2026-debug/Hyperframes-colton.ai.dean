@@ -48,7 +48,7 @@ Dark + blue accent: bg `#0a0a0f`, surface `#1a1a23`, accent `#3b82f6`, text `#ff
 
 ## Inspiration creators
 
-_(Studied creators live in [`_reference/creator-library/`](_reference/creator-library/). Paste a TikTok / Instagram Reel / YouTube Short URL and run `/study-creator <url>` to add one. At build time, name a creator — "build this like @handle" — to apply their style fingerprint to the visual layer. /setup seeds your first few here.)_
+See [`_reference/creator-library/INDEX.md`](_reference/creator-library/INDEX.md) for the full list. Add new creators via `/study-creator <url>`.
 
 ## Posting cadence & length defaults
 
