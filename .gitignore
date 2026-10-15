@@ -46,3 +46,8 @@ video-projects/*/inbox/footage/*
 video-projects/*/inbox/references/*
 !video-projects/*/inbox/**/.gitkeep
 __pycache__/
+
+# Project media too large for git (rendered/derived from gitignored footage)
+video-projects/*/assets/*.mp4
+video-projects/*/assets/*.m4a
+video-projects/*/assets/*.wav
