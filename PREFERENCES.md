@@ -47,7 +47,7 @@ _(music vibe, voiceover style, SFX, mix — populated by /feedback over time)_
 
 _(logo treatment, hashtags, handles, brand-tokens overrides — populated by /feedback over time)_
 
-- _no rules captured yet_
+- No name, business name, logo, or name lower-third on screen in VSL edits. Unbranded is deliberate; also no logo end card (2026-10-15)
 
 ## Avoid
 

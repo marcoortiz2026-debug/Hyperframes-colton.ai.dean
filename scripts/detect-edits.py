@@ -132,23 +132,48 @@ def retaken(i, segs):
 
 def trim_boundary_repeats(kept):
     """'...with the results, / with the results that...': drop the repeated
-    run (2-6 words) from the end of the earlier segment."""
+    run (2-6 words) once. It comes off the START of the later segment, whose
+    edge is a measured silence, so only one cut point relies on ASR timing
+    (trimming the earlier segment's tail relies on it entirely, and ASR stamps
+    drift ~0.2s). If the earlier segment is nothing but the repeat, drop it."""
     for s, nxt in zip(kept, kept[1:]):
         ws = [w for w in s["words"] if norm(w["text"])]
-        head = nxt["tokens"]
+        head = [w for w in nxt["words"] if norm(w["text"])]
         for n in range(min(6, len(ws), len(head)), 1, -1):
-            if [norm(w["text"]) for w in ws[-n:]] == head[:n]:
-                for w in ws[-n:]:
+            if [norm(w["text"]) for w in ws[-n:]] == [norm(w["text"]) for w in head[:n]]:
+                for w in (ws if n == len(ws) else head[:n]):
                     w["cut"] = "repeated across pause"
                 break
 
 
+def load_quiet_finder(media, window=0.12):
+    """Return snap(t): the quietest 20ms point within +-window of t. Used for
+    cut points inside speech, where ASR word stamps are off by up to ~0.2s."""
+    import math
+    import struct
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", media, "-ac", "1", "-ar", "16000",
+                          "-f", "s16le", "-"], capture_output=True, check=True).stdout
+    x = struct.unpack("<%dh" % (len(raw) // 2), raw)
+    hop = 320  # 20ms
+    rms = [math.sqrt(sum(v * v for v in x[i:i + hop]) / hop) for i in range(0, len(x) - hop, hop)]
+
+    def snap(t):
+        lo, hi = max(0, int((t - window) * 50)), min(len(rms) - 1, int((t + window) * 50))
+        if hi <= lo:
+            return t
+        best = min(range(lo, hi + 1), key=lambda i: rms[i])
+        return best / 50 + 0.01
+    return snap
+
+
 def mark_off_script(kept, script_tokens):
-    """Diff kept words against the script. Short insertions (<=2 words that the
-    script doesn't have there) are stumbles -> cut. Anything bigger is returned
-    as a review note, never auto-cut: it may be a deliberate ad-lib."""
+    """Diff kept words against the script. Only fillers ASR heard as a word
+    ("uh" -> "a") and doubled words ("the the") are auto-cut. Every other
+    difference becomes a review note, never a cut: speakers paraphrase and
+    reorder ("Instagram and Facebook"), and cutting a single word there
+    breaks the sentence."""
     words, toks = [], []
-    for w in (w for s in kept for w in s["words"]):
+    for w in (w for s in kept for w in s["words"] if not w.get("cut")):
         for t in script_tokens_of(w["text"]):
             words.append(w)
             toks.append(t)
@@ -156,7 +181,10 @@ def mark_off_script(kept, script_tokens):
     sm = difflib.SequenceMatcher(None, toks, script_tokens, autojunk=False)
     for tag, i1, i2, j1, j2 in sm.get_opcodes():
         said = " ".join(toks[i1:i2])
-        if tag == "delete" and (i2 - i1 <= 2 or all(t in FILLERS for t in toks[i1:i2])):
+        chunk = toks[i1:i2]
+        stutter = len(chunk) == 1 and (
+            (i1 > 0 and toks[i1 - 1] == chunk[0]) or (i2 < len(toks) and toks[i2] == chunk[0]))
+        if tag == "delete" and (stutter or all(t in FILLERS or t == "a" for t in chunk)):
             for w in words[i1:i2]:
                 w["cut"] = "off-script stumble"
         elif tag in ("delete", "replace"):
@@ -168,7 +196,7 @@ def mark_off_script(kept, script_tokens):
     return review
 
 
-def plan(segs, max_pause, pad, script_tokens=None):
+def plan(segs, max_pause, pad, script_tokens=None, snap=lambda t: t):
     cuts = []
     for i, s in enumerate(segs):
         toks = s["tokens"]
@@ -204,17 +232,29 @@ def plan(segs, max_pause, pad, script_tokens=None):
     for s in kept:
         ranges, cur, cur_pad = [], s["start"], True
         ws = s["words"]
+        in_cut = False
         for j, w in enumerate(ws):
             reason = w.get("cut") or ("filler" if norm(w["text"]) in FILLERS else None)
-            if reason:
-                nxt = ws[j + 1]["start"] if j + 1 < len(ws) else s["end"]
+            if not reason:
+                in_cut = False
+                continue
+            nxt = ws[j + 1]["start"] if j + 1 < len(ws) else s["end"]
+            if j + 1 < len(ws):
+                nxt = snap(nxt)
+            if in_cut:
+                # consecutive cut words form one cut: extend it, no sliver between
+                nxt = max(nxt, cur)
+                cuts[-1]["end"] = round(nxt, 3)
+                cuts[-1]["text"] += " " + w["text"]
+            else:
                 # "in uh in": drop the stutter word before the filler too
                 first = j - 1 if j > 0 and j + 1 < len(ws) and norm(ws[j - 1]["text"]) == norm(ws[j + 1]["text"]) else j
-                cut_from = ws[first - 1]["end"] if first > 0 else s["start"]
+                cut_from = snap(ws[first - 1]["end"]) if first > 0 else s["start"]
+                nxt = max(nxt, cut_from)  # ASR can stamp the next word before the cut point
                 ranges.append([cur, cut_from, cur_pad, False])
                 cuts.append({"start": round(cut_from, 3), "end": round(nxt, 3), "reason": reason,
                              "text": " ".join(x["text"] for x in ws[first:j + 1])})
-                cur, cur_pad = nxt, j + 1 >= len(ws)
+            cur, cur_pad, in_cut = nxt, j + 1 >= len(ws), True
         ranges.append([cur, s["end"], cur_pad, True])
         keep.extend(r for r in ranges if r[1] - r[0] > 0.05)
 
@@ -231,18 +271,34 @@ def plan(segs, max_pause, pad, script_tokens=None):
     return [[round(a, 3), round(b, 3)] for a, b in padded], cuts, review
 
 
-def render(media, keep, out):
-    parts, labels = [], []
-    for i, (a, b) in enumerate(keep):
-        parts.append(f"[0:v]trim={a}:{b},setpts=PTS-STARTPTS[v{i}];"
-                     f"[0:a]atrim={a}:{b},asetpts=PTS-STARTPTS,afade=t=in:d=0.01,"
-                     f"afade=t=out:st={max(0, b - a - 0.01):.3f}:d=0.01[a{i}];")
-        labels.append(f"[v{i}][a{i}]")
-    graph = "".join(parts) + "".join(labels) + f"concat=n={len(keep)}:v=1:a=1[v][a]"
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", media, "-filter_complex", graph,
-                    "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-crf", "20",
-                    "-preset", "medium", "-c:a", "aac", "-b:a", "192k",
-                    "-movflags", "+faststart", out], check=True)
+def render(media, keep, out, fps=30):
+    """Encode each kept range on its own, then join them losslessly.
+
+    One filter graph with a trim branch per range holds every branch's frames
+    in memory and gets OOM-killed on long 1080p footage. Boundaries snap to the
+    frame grid so each piece's audio and video lengths match exactly and A/V
+    sync can't drift across dozens of joins.
+    """
+    import os
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="rough-cut-")
+    listing = os.path.join(tmp, "list.txt")
+    with open(listing, "w") as lf:
+        for i, (a, b) in enumerate(keep):
+            a, b = round(a * fps) / fps, round(b * fps) / fps
+            dur = b - a
+            piece = os.path.join(tmp, f"{i:04d}.mkv")
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{a:.4f}", "-i", media,
+                            "-t", f"{dur:.4f}", "-map", "0:v:0", "-map", "0:a:0",
+                            "-vf", f"fps={fps}", "-af", f"afade=t=in:d=0.01,afade=t=out:st={max(0, dur - 0.01):.4f}:d=0.01",
+                            "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-pix_fmt", "yuv420p",
+                            "-c:a", "pcm_s16le", "-ar", "48000", piece], check=True)
+            lf.write(f"file '{piece}'\n")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", listing,
+                    "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out], check=True)
+    for f in os.listdir(tmp):
+        os.remove(os.path.join(tmp, f))
+    os.rmdir(tmp)
 
 
 def main():
@@ -255,6 +311,8 @@ def main():
     ap.add_argument("--max-pause", type=float, default=0.45, help="longest pause left in the cut (s)")
     ap.add_argument("--pad", type=float, default=0.12, help="handle kept around speech (s)")
     ap.add_argument("--script", help="VSL script (plain text): catches stumbles ASR can't tell from real words")
+    ap.add_argument("--drop", action="append", default=[], metavar="START-END",
+                    help="also remove this time range (s), e.g. --drop 264.2-265.4; repeatable")
     ap.add_argument("--render", help="also write a rough-cut MP4 here")
     args = ap.parse_args()
 
@@ -269,11 +327,16 @@ def main():
     if args.script:
         with open(args.script) as f:
             script_tokens = script_tokens_of(f.read())
-    keep, cuts, review = plan(segs, args.max_pause, args.pad, script_tokens)
+    keep, cuts, review = plan(segs, args.max_pause, args.pad, script_tokens,
+                              snap=load_quiet_finder(args.media))
     for s, e in silences:
         if e - s > args.max_pause and not any(a <= s and e <= b for a, b in keep):
             cuts.append({"start": round(s, 3), "end": round(e, 3), "reason": "dead air", "text": ""})
 
+    for d in args.drop:
+        a, b = (float(x) for x in d.split("-"))
+        keep = [r for k in keep for r in ([k[0], min(k[1], a)], [max(k[0], b), k[1]]) if r[1] - r[0] > 0.05]
+        cuts.append({"start": a, "end": b, "reason": "manual drop", "text": ""})
     kept_len = sum(b - a for a, b in keep)
     result = {"source": args.media, "duration": round(duration, 3),
               "kept_duration": round(kept_len, 3), "keep": keep,

@@ -312,7 +312,7 @@ python3 ../../scripts/detect-edits.py assets/raw.mp4 transcript.json \
     --script inbox/script/script.txt --out edit-plan.json --render assets/a-roll.mp4
 ```
 
-Always pass `--script` when you have one. Short fillers like "uh" are often transcribed as a real word ("a"), and only the script diff catches them. Off-script lines longer than 2 words are listed under `review`, never auto-cut, because they may be deliberate ad-libs. Re-transcribe the rough cut and confirm it reads like the script before building visuals on it. Then transcribe `a-roll.mp4` again for caption timing.
+Always pass `--script` when you have one. Short fillers like "uh" are often transcribed as a real word ("a"), and only the script diff catches them. The diff auto-cuts only fillers and doubled words. Every other difference (paraphrase, reordering, ad-libs) is listed under `review` and never cut, because speakers rarely read word for word and a one-word cut breaks the sentence. Use `--drop START-END` for anything you decide to remove by hand (e.g. an aside after the last line). Repeats across a pause come off the start of the later take, and mid-speech cut points snap to the quietest 20ms near the ASR stamp, because ASR word times drift by about 0.2s. Re-transcribe the rough cut and confirm it reads like the script before building visuals on it. Then transcribe `a-roll.mp4` again for caption timing.
 
 ## Prompting Shorthand (what the `/hyperframes` skill understands)
 
