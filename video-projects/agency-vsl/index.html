@@ -177,7 +177,7 @@
       .cg { position: absolute; bottom: 0; max-width: 1680px; padding: 10px 30px 14px; border-radius: 22px; background: rgba(6, 9, 16, 0.66);
         font-weight: 800; font-size: 74px; line-height: 1.12; letter-spacing: -0.01em; text-align: center; opacity: 0; visibility: hidden;
         box-shadow: 0 10px 30px rgba(0,0,0,.35); }
-      .cw { display: inline-block; opacity: 0.42; margin: 0 0.15em; }
+      .cw { display: inline-block; opacity: 0.42; }
       .cw.a { color: var(--accent-text); text-shadow: 0 0 22px rgba(59,130,246,.7); }
       .cw.w { color: var(--warn-text); text-shadow: 0 0 20px rgba(239,68,68,.55); }
     </style>
@@ -356,7 +356,7 @@
       <audio id="sfx-22" src="assets/sfx/sparkle.mp3" data-start="66.5" data-duration="1.4" data-track-index="72" data-volume="0.14"></audio>
       <audio id="sfx-23" src="assets/sfx/slam.mp3" data-start="71.47" data-duration="0.9" data-track-index="73" data-volume="0.2"></audio>
       <audio id="sfx-24" src="assets/sfx/whoosh.mp3" data-start="72.4" data-duration="0.6" data-track-index="74" data-volume="0.16"></audio>
-      <audio id="sfx-25" src="assets/sfx/notification.mp3" data-start="74.75" data-duration="0.5" data-track-index="75" data-volume="0.2"></audio>
+      <audio id="sfx-25" src="assets/sfx/notification.mp3" data-start="73.85" data-duration="0.5" data-track-index="75" data-volume="0.2"></audio>
       <audio id="sfx-26" src="assets/sfx/notification.mp3" data-start="79.45" data-duration="0.5" data-track-index="76" data-volume="0.2"></audio>
       <audio id="sfx-27" src="assets/sfx/notification.mp3" data-start="82.5" data-duration="0.5" data-track-index="77" data-volume="0.2"></audio>
       <audio id="sfx-28" src="assets/sfx/whoosh.mp3" data-start="84.6" data-duration="0.6" data-track-index="78" data-volume="0.2"></audio>
@@ -498,7 +498,7 @@
           zg.appendChild(d);
         }
         sceneIn("#s-ads", 60.27); ambient("#s-ads", 60.27, 12.2);
-        tl.fromTo("#a-card", { opacity: 0, y: 80, rotationX: 14, filter: "blur(12px)" }, { opacity: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 0.55, ease: "power3.out" }, 60.95);
+        tl.fromTo("#a-card", { opacity: 0, y: 80, rotationX: 14, filter: "blur(12px)" }, { opacity: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 0.55, ease: "power3.out" }, 60.45);
         tl.fromTo("#a-ig", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)" }, 62.35);
         tl.fromTo("#a-fb", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2)" }, 62.85);
         tl.fromTo("#a-hl", { backgroundColor: "rgba(59,130,246,0)" }, { backgroundColor: "rgba(59,130,246,0.22)", duration: 0.3, ease: "power1.out", yoyo: true, repeat: 1 }, 64.05);
@@ -512,8 +512,8 @@
 
         /* ---------------- S6 homeowners reach out ---------------- */
         panelIn("#s-notes", 72.47);
-        tl.fromTo("#n-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 73.55);
-        [["#n-1", 74.75, "expo.out"], ["#n-2", 79.45, "power4.out"], ["#n-3", 82.5, "back.out(1.4)"]].forEach(function (n) {
+        tl.fromTo("#n-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 72.6);
+        [["#n-1", 73.85, "expo.out"], ["#n-2", 79.45, "power4.out"], ["#n-3", 82.5, "back.out(1.4)"]].forEach(function (n) {
           tl.fromTo(n[0], { opacity: 0, x: 140, scale: 0.94 }, { opacity: 1, x: 0, scale: 1, duration: 0.45, ease: n[2] }, n[1]);
           tl.fromTo(n[0] + " .ic", { scale: 0.6 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.45)" }, n[1] + 0.1);
 
@@ -523,9 +523,9 @@
 
         /* ---------------- S7 9X ---------------- */
         sceneIn("#s-nine", 84.67); ambient("#s-nine", 84.67, 8.16);
-        tl.fromTo("#x-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 85.6);
-        tl.fromTo("#s-nine .num", { opacity: 0, scale: 0.6, filter: "blur(16px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 86.1);
-        counter("n-nine", 1, 9, 86.15, 0.75);
+        tl.fromTo("#x-label", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 84.85);
+        tl.fromTo("#s-nine .num", { opacity: 0, scale: 0.6, filter: "blur(16px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 85.1);
+        counter("n-nine", 1, 9, 85.75, 1.1);
         tl.fromTo("#s-nine .num", { scale: 1.1 }, { scale: 1, duration: 0.4, ease: "back.out(2.4)", immediateRender: false }, 86.9);
         tl.fromTo("#x-l1", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 87.55);
         tl.fromTo("#x-l2", { opacity: 0, y: 26, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "back.out(1.5)" }, 90.7);
@@ -570,6 +570,7 @@
           g.words.forEach(function (w, wi) {
             var s = document.createElement("span");
             s.className = "cw" + (w.k ? " " + w.k : ""); s.id = "cg-" + gi + "-" + wi; s.textContent = w.t;
+            if (wi > 0) el.appendChild(document.createTextNode(" "));
             el.appendChild(s);
           });
           host.appendChild(el);
@@ -577,7 +578,7 @@
           g.words.forEach(function (w, wi) {
             var sel = "#cg-" + gi + "-" + wi;
             tl.fromTo(sel, { opacity: 0.42 }, { opacity: 1, duration: 0.08, ease: "none" }, w.s);
-            if (w.k) tl.fromTo(sel, { scale: 1.08 }, { scale: 1, duration: 0.28, ease: "back.out(2.5)" }, w.s);
+            if (w.k) tl.fromTo(sel, { y: -10 }, { y: 0, duration: 0.3, ease: "back.out(2.5)" }, w.s);
           });
           tl.set(el, { autoAlpha: 0 }, g.end); // hard kill: one group visible at a time
         });
