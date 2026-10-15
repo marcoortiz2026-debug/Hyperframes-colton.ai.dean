@@ -1,0 +1,904 @@
+{
+  "source": "raw-vsl-hvac.mp4",
+  "duration": 267.767,
+  "kept_duration": 123.272,
+  "keep": [
+    [
+      15.638,
+      18.282
+    ],
+    [
+      19.603,
+      21.827
+    ],
+    [
+      23.63,
+      24.582
+    ],
+    [
+      25.379,
+      27.643
+    ],
+    [
+      28.891,
+      31.947
+    ],
+    [
+      33.337,
+      35.525
+    ],
+    [
+      38.709,
+      43.751
+    ],
+    [
+      45.417,
+      47.214
+    ],
+    [
+      48.226,
+      50.777
+    ],
+    [
+      51.675,
+      53.236
+    ],
+    [
+      54.883,
+      58.091
+    ],
+    [
+      59.307,
+      60.56
+    ],
+    [
+      63.586,
+      66.718
+    ],
+    [
+      67.453,
+      69.621
+    ],
+    [
+      72.191,
+      73.763
+    ],
+    [
+      74.473,
+      76.088
+    ],
+    [
+      76.975,
+      77.998
+    ],
+    [
+      80.71,
+      84.845
+    ],
+    [
+      88.574,
+      90.304
+    ],
+    [
+      91.992,
+      93.726
+    ],
+    [
+      95.267,
+      97.117
+    ],
+    [
+      97.96,
+      99.546
+    ],
+    [
+      103.623,
+      106.928
+    ],
+    [
+      110.078,
+      113.499
+    ],
+    [
+      113.734,
+      116.134
+    ],
+    [
+      117.115,
+      118.932
+    ],
+    [
+      124.858,
+      128.331
+    ],
+    [
+      131.166,
+      133.049
+    ],
+    [
+      133.653,
+      136.227
+    ],
+    [
+      137.784,
+      139.574
+    ],
+    [
+      142.111,
+      144.628
+    ],
+    [
+      156.648,
+      158.688
+    ],
+    [
+      159.995,
+      163.375
+    ],
+    [
+      166.348,
+      170.604
+    ],
+    [
+      171.858,
+      174.353
+    ],
+    [
+      188.421,
+      190.125
+    ],
+    [
+      190.903,
+      194.326
+    ],
+    [
+      195.986,
+      199.025
+    ],
+    [
+      210.53,
+      215.641
+    ],
+    [
+      217.213,
+      218.922
+    ],
+    [
+      219.872,
+      221.335
+    ],
+    [
+      225.867,
+      227.544
+    ],
+    [
+      228.856,
+      231.239
+    ],
+    [
+      235.094,
+      238.953
+    ],
+    [
+      240.118,
+      241.942
+    ],
+    [
+      242.879,
+      244.487
+    ],
+    [
+      245.152,
+      247.678
+    ],
+    [
+      249.851,
+      253.952
+    ],
+    [
+      255.318,
+      256.441
+    ],
+    [
+      258.621,
+      259.771
+    ],
+    [
+      261.357,
+      263.293
+    ]
+  ],
+  "cuts": [
+    {
+      "start": 0.0,
+      "end": 0.103,
+      "reason": "no speech (noise/breath)",
+      "text": ""
+    },
+    {
+      "start": 0.103,
+      "end": 0.89,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 0.894,
+      "end": 1.557,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 1.557,
+      "end": 1.612,
+      "reason": "no speech (noise/breath)",
+      "text": ""
+    },
+    {
+      "start": 1.612,
+      "end": 2.191,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 2.193,
+      "end": 4.676,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 4.676,
+      "end": 5.315,
+      "reason": "repeated across pause",
+      "text": "There's a reason"
+    },
+    {
+      "start": 5.315,
+      "end": 6.369,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 6.369,
+      "end": 14.087,
+      "reason": "flubbed take (re-said later)",
+      "text": "a reason why HVAC contractors love us and it has everything to do with the results that we've generated for them for the last four."
+    },
+    {
+      "start": 14.087,
+      "end": 15.758,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 18.162,
+      "end": 19.723,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 21.707,
+      "end": 23.01,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 23.01,
+      "end": 23.63,
+      "reason": "repeated across pause",
+      "text": "with the results"
+    },
+    {
+      "start": 24.462,
+      "end": 25.499,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 27.523,
+      "end": 29.011,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 31.827,
+      "end": 33.457,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 35.405,
+      "end": 38.828,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 43.631,
+      "end": 45.537,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 47.094,
+      "end": 48.346,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 50.657,
+      "end": 51.795,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 53.117,
+      "end": 55.003,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 57.971,
+      "end": 59.427,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 60.44,
+      "end": 63.706,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 66.598,
+      "end": 67.573,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 69.501,
+      "end": 72.311,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 73.643,
+      "end": 74.593,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 75.968,
+      "end": 77.095,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 77.878,
+      "end": 80.83,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 84.725,
+      "end": 88.694,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 90.184,
+      "end": 92.112,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 93.606,
+      "end": 95.387,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 96.997,
+      "end": 98.08,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 99.426,
+      "end": 103.743,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 106.808,
+      "end": 110.198,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 113.379,
+      "end": 113.854,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 116.014,
+      "end": 117.235,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 118.812,
+      "end": 120.803,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 120.803,
+      "end": 123.371,
+      "reason": "flubbed take (re-said later)",
+      "text": "With us, we run targeted HVAC ads."
+    },
+    {
+      "start": 123.371,
+      "end": 124.978,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 128.211,
+      "end": 131.286,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 132.929,
+      "end": 133.773,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 136.107,
+      "end": 137.904,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 139.454,
+      "end": 142.231,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 144.508,
+      "end": 149.427,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 149.427,
+      "end": 150.412,
+      "reason": "flubbed take (re-said later)",
+      "text": "And the best part is"
+    },
+    {
+      "start": 150.412,
+      "end": 152.105,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 152.129,
+      "end": 152.737,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 152.742,
+      "end": 156.768,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 158.568,
+      "end": 160.115,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 163.255,
+      "end": 166.468,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 170.484,
+      "end": 171.978,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 174.233,
+      "end": 177.357,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 177.357,
+      "end": 180.248,
+      "reason": "flubbed take (re-said later)",
+      "text": "And so with this system, our average client makes a nine X RY."
+    },
+    {
+      "start": 180.248,
+      "end": 184.472,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 184.472,
+      "end": 187.79,
+      "reason": "flubbed take (re-said later)",
+      "text": "And with this system, our average client makes 9x for every dollar they"
+    },
+    {
+      "start": 187.79,
+      "end": 188.541,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 190.005,
+      "end": 191.023,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 194.206,
+      "end": 196.106,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 198.905,
+      "end": 206.334,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 206.334,
+      "end": 208.649,
+      "reason": "flubbed take (re-said later)",
+      "text": "So if you're tired of worrying about whether this continue."
+    },
+    {
+      "start": 208.649,
+      "end": 210.65,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 215.521,
+      "end": 217.333,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 218.802,
+      "end": 219.992,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 221.215,
+      "end": 222.719,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 222.719,
+      "end": 224.216,
+      "reason": "flubbed take (re-said later)",
+      "text": "and show you that we can make you money."
+    },
+    {
+      "start": 224.216,
+      "end": 225.987,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 227.424,
+      "end": 228.976,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 231.119,
+      "end": 235.214,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 238.833,
+      "end": 240.238,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 241.822,
+      "end": 242.999,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 244.367,
+      "end": 245.272,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 247.558,
+      "end": 249.971,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 253.832,
+      "end": 255.438,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 256.321,
+      "end": 258.741,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 259.651,
+      "end": 261.477,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 263.173,
+      "end": 264.698,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 263.9,
+      "end": 267.8,
+      "reason": "manual drop",
+      "text": ""
+    },
+    {
+      "start": 264.969,
+      "end": 267.602,
+      "reason": "dead air",
+      "text": ""
+    },
+    {
+      "start": 267.602,
+      "end": 267.767,
+      "reason": "no speech (noise/breath)",
+      "text": ""
+    }
+  ],
+  "review": [
+    {
+      "start": 23.6,
+      "said": "that",
+      "script": ""
+    },
+    {
+      "start": 31.12,
+      "said": "contractors",
+      "script": "companies"
+    },
+    {
+      "start": 40.32,
+      "said": "net over three hundred thousand dollars an inch",
+      "script": "and his"
+    },
+    {
+      "start": 45.36,
+      "said": "",
+      "script": "netted more than 300k"
+    },
+    {
+      "start": 46.56,
+      "said": "working with us",
+      "script": ""
+    },
+    {
+      "start": 56.08,
+      "said": "",
+      "script": "who"
+    },
+    {
+      "start": 56.48,
+      "said": "a hundred and eighty thousand",
+      "script": "180k"
+    },
+    {
+      "start": 67.59,
+      "said": "we're",
+      "script": "were"
+    },
+    {
+      "start": 71.99,
+      "said": "that",
+      "script": ""
+    },
+    {
+      "start": 83.11,
+      "said": "without getting",
+      "script": "before we make"
+    },
+    {
+      "start": 96.79,
+      "said": "spend",
+      "script": "costs"
+    },
+    {
+      "start": 98.55,
+      "said": "even",
+      "script": ""
+    },
+    {
+      "start": 103.67,
+      "said": "paper estimate",
+      "script": "payperestimate"
+    },
+    {
+      "start": 105.11,
+      "said": "charge",
+      "script": "charged for every appointment"
+    },
+    {
+      "start": 105.75,
+      "said": "appointment",
+      "script": "homeowner"
+    },
+    {
+      "start": 110.79,
+      "said": "angie your home advisor do i even have to mention it",
+      "script": "angi and homeadvisor"
+    },
+    {
+      "start": 115.11,
+      "said": "different",
+      "script": ""
+    },
+    {
+      "start": 127.02,
+      "said": "",
+      "script": "facebook and"
+    },
+    {
+      "start": 127.42,
+      "said": "and facebook",
+      "script": ""
+    },
+    {
+      "start": 131.26,
+      "said": "replacement",
+      "script": "replacements"
+    },
+    {
+      "start": 135.9,
+      "said": "",
+      "script": "service"
+    },
+    {
+      "start": 162.06,
+      "said": "business's",
+      "script": "company's"
+    },
+    {
+      "start": 166.06,
+      "said": "so",
+      "script": ""
+    },
+    {
+      "start": 168.62,
+      "said": "they have an inquiry about your business and",
+      "script": ""
+    },
+    {
+      "start": 173.98,
+      "said": "personally and",
+      "script": ""
+    },
+    {
+      "start": 193.53,
+      "said": "that they spend",
+      "script": "spent"
+    },
+    {
+      "start": 211.85,
+      "said": "whether",
+      "script": "if"
+    },
+    {
+      "start": 213.21,
+      "said": "is gonna",
+      "script": "will"
+    },
+    {
+      "start": 214.41,
+      "said": "without you getting results",
+      "script": ""
+    },
+    {
+      "start": 226.81,
+      "said": "can",
+      "script": "could"
+    },
+    {
+      "start": 229.37,
+      "said": "we",
+      "script": "we've"
+    },
+    {
+      "start": 230.17,
+      "said": "30day",
+      "script": "thirty day"
+    },
+    {
+      "start": 235.25,
+      "said": "",
+      "script": "on"
+    },
+    {
+      "start": 237.41,
+      "said": "we've launched",
+      "script": "we'd launch"
+    },
+    {
+      "start": 241.25,
+      "said": "we would",
+      "script": "we'd"
+    },
+    {
+      "start": 243.04,
+      "said": "",
+      "script": "results"
+    },
+    {
+      "start": 243.28,
+      "said": "results",
+      "script": ""
+    },
+    {
+      "start": 246.16,
+      "said": "would we",
+      "script": "will"
+    },
+    {
+      "start": 249.52,
+      "said": "so",
+      "script": ""
+    },
+    {
+      "start": 251.36,
+      "said": "installs",
+      "script": "replacements"
+    },
+    {
+      "start": 252.08,
+      "said": "replacements onto",
+      "script": "installations to"
+    },
+    {
+      "start": 262.72,
+      "said": "seeing",
+      "script": "speaking with"
+    },
+    {
+      "start": 264.16,
+      "said": "let's see what happens",
+      "script": ""
+    }
+  ]
+}
