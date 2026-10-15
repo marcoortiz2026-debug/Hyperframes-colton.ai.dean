@@ -271,31 +271,44 @@ def plan(segs, max_pause, pad, script_tokens=None, snap=lambda t: t):
     return [[round(a, 3), round(b, 3)] for a, b in padded], cuts, review
 
 
-def render(media, keep, out, fps=30):
-    """Encode each kept range on its own, then join them losslessly.
+def render(media, keep, out, fps=30, sr=48000):
+    """Write the rough cut with picture and sound locked frame-exactly.
 
-    One filter graph with a trim branch per range holds every branch's frames
-    in memory and gets OOM-killed on long 1080p footage. Boundaries snap to the
-    frame grid so each piece's audio and video lengths match exactly and A/V
-    sync can't drift across dozens of joins.
+    Picture: ONE pass over a constant-frame-rate source, keeping frames by
+    index (select) and renumbering them (setpts=N), so output frame k is
+    exactly the planned source frame. Do not encode ranges separately and
+    concatenate them: per-range `-ss/-t/fps` encodes come out a frame or so
+    long, the concat accumulates the surplus, and the picture drifted 11
+    frames (367 ms) behind the sound by the end of a 2-minute cut.
+    Sound: each range is cut by sample count (with 10 ms fades against
+    clicks) and joined as PCM, which is sample-exact.
+    The source must be constant frame rate (re-encode phone footage with
+    -vf fps=30 first).
     """
     import os
     import tempfile
+    frames = [(round(a * fps), round(b * fps)) for a, b in keep]
+    sel = "+".join(f"between(n,{fa},{fb - 1})" for fa, fb in frames)
     tmp = tempfile.mkdtemp(prefix="rough-cut-")
     listing = os.path.join(tmp, "list.txt")
     with open(listing, "w") as lf:
-        for i, (a, b) in enumerate(keep):
-            a, b = round(a * fps) / fps, round(b * fps) / fps
-            dur = b - a
-            piece = os.path.join(tmp, f"{i:04d}.mkv")
-            subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{a:.4f}", "-i", media,
-                            "-t", f"{dur:.4f}", "-map", "0:v:0", "-map", "0:a:0",
-                            "-vf", f"fps={fps}", "-af", f"afade=t=in:d=0.01,afade=t=out:st={max(0, dur - 0.01):.4f}:d=0.01",
-                            "-c:v", "libx264", "-crf", "18", "-preset", "medium", "-pix_fmt", "yuv420p",
-                            "-c:a", "pcm_s16le", "-ar", "48000", piece], check=True)
+        for i, (fa, fb) in enumerate(frames):
+            sa, sb = fa * sr // fps, fb * sr // fps
+            dur = (sb - sa) / sr
+            piece = os.path.join(tmp, f"{i:04d}.wav")
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", media, "-vn", "-af",
+                            f"aresample={sr},atrim=start_sample={sa}:end_sample={sb},asetpts=N/SR/TB,"
+                            f"afade=t=in:d=0.01,afade=t=out:st={max(0, dur - 0.01):.4f}:d=0.01",
+                            "-c:a", "pcm_s16le", piece], check=True)
             lf.write(f"file '{piece}'\n")
+    audio = os.path.join(tmp, "audio.wav")
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", listing,
-                    "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out], check=True)
+                    "-c:a", "pcm_s16le", audio], check=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", media, "-i", audio, "-filter_complex",
+                    f"[0:v]select='{sel}',setpts=N/{fps}/TB[v]", "-map", "[v]", "-map", "1:a",
+                    "-c:v", "libx264", "-crf", "14", "-preset", "slow", "-g", str(fps), "-pix_fmt", "yuv420p",
+                    "-r", str(fps), "-fps_mode", "cfr", "-c:a", "aac", "-b:a", "192k",
+                    "-movflags", "+faststart", out], check=True)
     for f in os.listdir(tmp):
         os.remove(os.path.join(tmp, f))
     os.rmdir(tmp)
