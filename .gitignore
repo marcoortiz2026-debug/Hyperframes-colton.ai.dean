@@ -51,4 +51,4 @@ __pycache__/
 video-projects/*/assets/*.mp4
 video-projects/*/assets/*.m4a
 video-projects/*/assets/*.wav
-video-projects/*/.hyperframes/render-outputs.json
+video-projects/*/.hyperframes/
