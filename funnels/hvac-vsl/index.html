@@ -54,20 +54,20 @@
     @keyframes ping{0%{transform:scale(.6);opacity:.8}100%{transform:scale(1.8);opacity:0}}
 
     /* ---------- hero ---------- */
-    .hero{position:relative;overflow:hidden;padding:54px 0 72px;text-align:center}
+    .hero{position:relative;overflow:hidden;padding:34px 0 64px;text-align:center}
     .hero .eyebrow{justify-content:center}
-    .hero h1{max-width:1000px;margin:20px auto 0;font-size:clamp(2.05rem,5.3vw,4.35rem);line-height:1.02;font-stretch:104%}
-    .hero h1 .no-fee{padding-bottom:.04em;background:linear-gradient(90deg,var(--blue),var(--electric)) no-repeat left 100%/0% .1em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-    .is-loaded .hero h1 .no-fee{animation:sweep 1.1s .75s var(--ease) forwards}
-    @keyframes sweep{to{background-size:100% .1em}}
-    .hero .sub{max-width:720px;margin:22px auto 0;color:var(--muted-2);font-size:clamp(1rem,1.5vw,1.16rem);line-height:1.6}
+    .hero h1{max-width:1000px;margin:14px auto 0;font-stretch:104%;line-height:1}
+    .hero h1 .h1-top{display:block;color:var(--white);font-size:clamp(1.7rem,3.6vw,3rem);letter-spacing:-.02em;line-height:1.05}
+    .hero h1 .h1-then{display:block;margin-top:.08em;color:var(--electric);font-size:clamp(2.6rem,6.6vw,5.6rem);font-weight:900;font-stretch:110%;letter-spacing:-.035em;line-height:.98;text-shadow:0 0 42px rgba(25,195,255,.35)}
+    .hero h1 .then{display:inline-block;padding:0 .18em .02em;margin-right:.06em;border-radius:.12em;background:var(--electric);color:var(--bg);text-shadow:none;transform:rotate(-2deg)}
+    .hero .sub{max-width:640px;margin:16px auto 0;color:var(--muted-2);font-size:clamp(1rem,1.5vw,1.16rem);line-height:1.6}
     .hero-in{opacity:0;transform:translateY(18px)}
     .is-loaded .hero-in{animation:rise .8s var(--ease) forwards}
     .is-loaded .hero-in.d1{animation-delay:.08s}.is-loaded .hero-in.d2{animation-delay:.18s}.is-loaded .hero-in.d3{animation-delay:.3s}.is-loaded .hero-in.d4{animation-delay:.42s}
     @keyframes rise{to{opacity:1;transform:none}}
 
     /* ---------- VSL player ---------- */
-    .vsl{position:relative;width:min(1000px,100%);margin:38px auto 0}
+    .vsl{position:relative;width:min(1000px,100%);margin:30px auto 0}
     .vsl-frame{position:relative;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#05070a;border:1px solid rgba(90,160,255,.35);
       box-shadow:0 0 0 1px rgba(255,255,255,.04),0 30px 80px rgba(0,0,0,.6),0 0 90px -10px var(--blue-glow)}
     .vsl-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#05070a}
@@ -234,13 +234,15 @@
       .brand img{height:32px}
       .brand span{display:none}
       .booked-pill{padding:7px 11px;font-size:10px}
-      .hero{padding:26px 0 56px}
+      .hero{padding:18px 0 48px}
       .hero .eyebrow{font-size:10px;letter-spacing:.1em}
       .eyebrow::before{display:none}
       .eyebrow{text-align:center}
-      .hero h1{margin-top:14px;font-size:clamp(1.72rem,7.6vw,2.2rem);line-height:1.05}
-      .hero .sub{margin-top:14px;font-size:15px;line-height:1.55}
-      .vsl{margin-top:30px;width:calc(100% + 8px);margin-left:-4px}
+      .hero h1{margin-top:10px}
+      .hero h1 .h1-top{font-size:clamp(1.3rem,6vw,1.65rem)}
+      .hero h1 .h1-then{font-size:clamp(2.1rem,10.4vw,2.8rem)}
+      .hero .sub{margin-top:12px;font-size:14.5px;line-height:1.5}
+      .vsl{margin-top:24px;width:calc(100% + 8px);margin-left:-4px}
       .vsl-frame{border-radius:12px}
       .vsl-play{width:72px;height:72px}
       .vsl-play svg{width:26px;height:26px}
@@ -280,7 +282,6 @@
     @media(prefers-reduced-motion:reduce){
       html{scroll-behavior:auto}
       .reveal,.hero-in{opacity:1!important;transform:none!important}
-      .hero h1 .no-fee{background-size:100% .1em!important}
       .steps-line::after{transform:none!important}
       *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
     }
@@ -304,19 +305,19 @@
     <section class="hero" aria-labelledby="offer-title">
       <div class="bg-glow" aria-hidden="true"></div>
       <div class="wrap">
-        <p class="eyebrow hero-in">HVAC owners only · 30-day offer</p>
-        <h1 id="offer-title" class="hero-in d1">We’ll Run Your HVAC Ads for <span class="blue">30&nbsp;Days.</span> <span class="no-fee">$0 Management Fee Upfront.</span></h1>
-        <p class="sub hero-in d2">Exclusive replacement &amp; install leads. You see our work <strong>before</strong> you commit.</p>
+        <p class="eyebrow hero-in">HVAC owners only · 30-day partnership</p>
+        <h1 id="offer-title" class="hero-in d1"><span class="h1-top">You Close More HVAC&nbsp;Jobs.</span> <span class="h1-then"><span class="then">THEN</span> We Get&nbsp;Paid.</span></h1>
+        <p class="sub hero-in d2">We bring you exclusive replacement &amp; install opportunities. You see results <strong>before</strong> paying&nbsp;us.</p>
 
         <div class="vsl hero-in d3">
           <span class="vsl-tag">Watch before your call</span>
           <div class="vsl-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
           <div class="vsl-frame">
             <!-- HVAC VSL: paste the finished VSL video URL into src (and an optional poster image) -->
-            <video id="vsl-video" src="" poster="" playsinline preload="metadata" aria-label="Mach 1 Growth Firm HVAC offer video"></video>
+            <video id="vsl-video" src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6ad03c73ebf7eb1c9edff860.mp4" playsinline preload="metadata" aria-label="Mach 1 Growth Firm HVAC offer video"></video>
             <button class="vsl-cover" id="vsl-cover" type="button" aria-label="Play the video">
               <span class="vsl-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4l15 8-15 8z"/></svg></span>
-              <span class="vsl-cover-label">Hit play · sound on</span>
+              <span class="vsl-cover-label">Hit play · 2 min · sound on</span>
             </button>
           </div>
         </div>
@@ -585,6 +586,9 @@
       vsl.controls=true;vslCover.classList.add('hide');
       const p=vsl.play();if(p&&p.catch)p.catch(()=>{});
     };
+    const vslFrame=()=>{ if(vsl.currentTime===0){ try{ vsl.currentTime=0.1 }catch(e){} } };
+    vsl.addEventListener('loadedmetadata',vslFrame);
+    if(vsl.readyState>=1)vslFrame();
     vslCover.addEventListener('click',playVsl);
     vsl.addEventListener('play',()=>{vsl.controls=true;vslCover.classList.add('hide')});
 
