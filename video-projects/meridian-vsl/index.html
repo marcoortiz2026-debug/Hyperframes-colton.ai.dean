@@ -120,8 +120,9 @@
       .full { position: absolute; inset: 0; z-index: 20; }
       .center-stack { position: absolute; inset: 0; padding: 80px 120px 230px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
       .figs .line { font-size: 74px; font-weight: 900; letter-spacing: -0.01em; }
-      .figs .num { font-size: 300px; }
-      .figs .num .amp { font-size: 200px; padding: 0 20px; }
+      .figs .numrow { display: flex; align-items: baseline; justify-content: center; }
+      .figs .num { font-size: 300px; display: inline-block; }
+      .figs .num.amp { font-size: 200px; padding: 0 20px; }
       .figs .line2 { font-size: 92px; font-weight: 900; letter-spacing: 0.12em; color: var(--accent-text); }
 
       /* ---------- pop chips (speaker right, chip left) ---------- */
@@ -142,7 +143,7 @@
       .big-word.blue { color: var(--accent-text); text-shadow: 0 0 40px rgba(59,130,246,.6); }
 
       /* ---------- down arrow + end card ---------- */
-      .arrow { position: absolute; left: 50%; bottom: 210px; z-index: 15; width: 120px; height: 120px; margin-left: -60px; border-radius: 50%;
+      .arrow { position: absolute; left: 1620px; bottom: 62px; z-index: 15; width: 120px; height: 120px; margin-left: -60px; border-radius: 50%;
         background: var(--accent); box-shadow: 0 0 40px rgba(59,130,246,.8); display: grid; place-items: center; }
       .arrow::after { content: ""; width: 34px; height: 34px; border-right: 10px solid #fff; border-bottom: 10px solid #fff; transform: translateY(-8px) rotate(45deg); }
       .endcard { position: absolute; inset: 0; z-index: 30; }
@@ -214,7 +215,7 @@
         <div class="center-stack">
           <div class="label" id="f-label">The good news</div>
           <div class="line" id="f-l1">Scaled multiple companies past</div>
-          <div class="num"><span id="f-7">7</span><span class="amp" id="f-amp">&amp;</span><span id="f-8">8</span></div>
+          <div class="numrow"><span class="num" id="f-7">7</span><span class="num amp" id="f-amp">&amp;</span><span class="num" id="f-8">8</span></div>
           <div class="line2" id="f-l2">FIGURES</div>
         </div>
       </div>
@@ -487,6 +488,11 @@
           tl.to(sel, { y: -6, duration: (tEnd - t) / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, t + 0.45);
           tl.to(sel, { opacity: 0, x: -50, scale: 0.95, filter: "blur(12px)", duration: 0.26, ease: "power2.in" }, tEnd - 0.26);
         }
+        function dimThenLight(sel, tDim, tLit, ease) { // row waits dimmed, lights up on its word
+          tl.fromTo(sel, { opacity: 0, x: 90, filter: "blur(10px)" }, { opacity: 0.3, x: 0, filter: "blur(0px)", duration: 0.42, ease: ease || "expo.out" }, tDim);
+          tl.to(sel, { opacity: 1, duration: 0.22, ease: "power2.out" }, tLit);
+          tl.fromTo(sel + " .tx", { x: 16 }, { x: 0, duration: 0.35, ease: "back.out(2)" }, tLit);
+        }
         function xStamp(sel, t) {
           tl.fromTo(sel, { scale: 2.2, opacity: 0, rotation: -25 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.32, ease: "back.out(2.2)" }, t);
         }
@@ -571,7 +577,7 @@
         labelIn("#pp-label", 88.95);
         tl.fromTo("#pp-1", { opacity: 0, x: 80, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 90.4);
         tl.fromTo("#pp-2", { opacity: 0, x: 80, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 92.62);
-        tl.fromTo("#pp-chart", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 91.2);
+        tl.fromTo("#pp-chart", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 92.45);
         var H = [28, 40, 52, 66, 80, 100];
         document.querySelectorAll("#pp-chart .b").forEach(function (b, i) { b.style.height = H[i] + "%"; });
         tl.fromTo("#pp-chart .b", { scaleY: 0 }, { scaleY: 1, duration: 0.5, ease: "back.out(1.6)", stagger: 0.14 }, 92.7);
@@ -585,9 +591,9 @@
         /* ---------------- S10 the guarantee (104.5-116.667) ---------------- */
         panelIn("#s-guar", 104.5);
         labelIn("#g-label", 104.6);
-        [["#g-1", 107.0, "expo.out"], ["#g-2", 108.05, "power4.out"], ["#g-3", 109.33, "back.out(1.3)"]].forEach(function (g) {
-          slideIn(g[0], g[1], g[2]);
-          tl.set(g[0] + " .ck", { scale: 0 }, g[1]);
+        [["#g-1", 107.0, "expo.out"], ["#g-2", 108.05, "power4.out"], ["#g-3", 109.33, "back.out(1.3)"]].forEach(function (g, i) {
+          dimThenLight(g[0], 105.0 + i * 0.12, g[1], g[2]);
+          tl.set(g[0] + " .ck", { scale: 0 }, 105.0);
         });
         tl.fromTo("#g-dial", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 110.25);
         tl.fromTo("#s-guar .ck", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.12, immediateRender: false }, 110.3); // "dialed in": all three tick
@@ -626,8 +632,8 @@
         /* ---------------- S14 on the call (146.567-155.8) ---------------- */
         panelIn("#s-call", 146.567);
         labelIn("#c-label", 146.9);
-        [["#c-1", 150.0, "expo.out"], ["#c-2", 151.84, "power4.out"], ["#c-3", 152.88, "back.out(1.3)"]].forEach(function (c) {
-          slideIn(c[0], c[1], c[2]);
+        [["#c-1", 150.0, "expo.out"], ["#c-2", 151.84, "power4.out"], ["#c-3", 152.88, "back.out(1.3)"]].forEach(function (c, i) {
+          dimThenLight(c[0], 147.3 + i * 0.12, c[1], c[2]);
           tl.fromTo(c[0] + " .dot-ic", { scale: 0.5 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" }, c[1] + 0.1);
         });
         sceneOut("#s-call", 155.8);
@@ -635,7 +641,8 @@
         /* ---------------- S15 pop: price, straight up (156.967-163.767) ---------------- */
         popIn("#p-price", 156.967, 163.767);
         [["#pr-1", 158.0], ["#pr-2", 159.52], ["#pr-3", 160.56]].forEach(function (p) {
-          tl.fromTo(p[0], { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, p[1]);
+          tl.fromTo(p[0], { opacity: 0, x: -30 }, { opacity: 0.3, x: 0, duration: 0.3, ease: "power3.out" }, 157.3 + ["#pr-1", "#pr-2", "#pr-3"].indexOf(p[0]) * 0.1);
+          tl.to(p[0], { opacity: 1, duration: 0.22, ease: "power2.out" }, p[1]);
           tl.fromTo(p[0] + " b", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(2.4)" }, p[1] + 0.15);
         });
 
