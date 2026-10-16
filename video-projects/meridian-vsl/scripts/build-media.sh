@@ -35,3 +35,7 @@ ffmpeg -v error -y -i assets/music-bed.mp3 -i assets/music-bed.mp3 -filter_compl
   "[0:a][1:a]acrossfade=d=3:c1=tri:c2=tri,atrim=0:$TOTAL,afade=t=in:d=1.5,afade=t=out:st=$(python3 -c "print($TOTAL - 4)"):d=4[a]" \
   -map "[a]" -c:a aac -b:a 160k assets/music-bed-mix.m4a
 echo "body ${BODY}s + cta ${CTA}s -> composition ${TOTAL}s"
+
+# Darken the room behind the speaker (person segmentation; every frame kept, audio copied)
+python3 scripts/darken-bg.py assets/a-roll.mp4 assets/a-roll-dark.mp4
+python3 scripts/darken-bg.py assets/cta.mp4 assets/cta-dark.mp4
