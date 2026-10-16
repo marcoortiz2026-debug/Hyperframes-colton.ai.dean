@@ -27,7 +27,7 @@ FIXES = [
     (["thumbtack,"], ["Thumbtack,"]),
     (["you.", "That", "generating"], ["you", "that", "generating"]),
     (["nitty", "gritty"], ["nitty-gritty"]),
-    (["someone", "call", "Jaden,"], ["someone", "called", "Jayden,"]),
+    (["someone", "call", "Jaden,"], ["someone", "called", "Jordan,"]),
 ]
 
 ACCENT = {"side", "good", "seven", "eight", "figure", "construction", "estimates", "work", "opportunities",
