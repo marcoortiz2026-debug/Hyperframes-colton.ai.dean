@@ -52,3 +52,8 @@ video-projects/*/assets/*.mp4
 video-projects/*/assets/*.m4a
 video-projects/*/assets/*.wav
 video-projects/*/.hyperframes/
+
+# Derived cut-analysis files (rebuilt by scripts/build-media.sh)
+video-projects/*/cut/*.env.json
+video-projects/*/cut/tr-*/*.mp4
+video-projects/*/cut/tr-*/log.txt

@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/vendor/gsap.min.js"></script>
+    <script src="assets/captions.js"></script>
+    <script src="assets/faces.js"></script>
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --surface: #141a26;
+        --accent: #3b82f6;
+        --accent-text: #7cb4ff;
+        --accent-glow: rgba(59, 130, 246, 0.45);
+        --warn: #ef4444;
+        --warn-text: #ff7a7a;
+        --ember: #f97316;
+        --text: #ffffff;
+        --text-dim: #a9b4c7;
+        --edge: rgba(255, 255, 255, 0.14);
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+      body { font-family: "Inter", system-ui, sans-serif; color: var(--text); }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+
+      /* ---------- camera ---------- */
+      #cam { position: absolute; inset: 0; transform-origin: 50% 50%; filter: brightness(1.12) contrast(1.06) saturate(1.04); }
+      #cam video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .cam-vignette { position: absolute; inset: 0; pointer-events: none; z-index: 2;
+        background: radial-gradient(ellipse 75% 70% at 50% 42%, transparent 55%, rgba(0, 0, 0, 0.5) 100%); }
+
+      /* ---------- shared graphic texture ---------- */
+      .canvas { position: absolute; inset: 0; background: var(--bg); overflow: hidden; }
+      .glow { position: absolute; width: 1400px; height: 1000px; left: 260px; top: -60px; border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(59, 130, 246, 0.26), rgba(59, 130, 246, 0.07) 55%, transparent); }
+      .glow.red { background: radial-gradient(closest-side, rgba(239, 68, 68, 0.22), rgba(239, 68, 68, 0.06) 55%, transparent); }
+      .grid { position: absolute; left: -200px; right: -200px; bottom: -80px; height: 620px;
+        transform: perspective(900px) rotateX(62deg); transform-origin: 50% 100%;
+        background:
+          repeating-linear-gradient(0deg, rgba(124, 180, 255, 0.10) 0 1px, transparent 1px 80px),
+          repeating-linear-gradient(90deg, rgba(124, 180, 255, 0.10) 0 1px, transparent 1px 80px);
+        -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 90%); mask-image: linear-gradient(to top, #000 10%, transparent 90%); }
+      .vig { position: absolute; inset: 0; pointer-events: none;
+        background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgba(0, 0, 0, 0.75) 100%); }
+      .grain { position: absolute; inset: -40px; pointer-events: none; z-index: 60; opacity: 0.55; mix-blend-mode: overlay;
+        background:
+          radial-gradient(circle at 30% 40%, rgba(255,255,255,.05) 0 1px, transparent 1px) 0 0 / 3px 3px,
+          radial-gradient(circle at 70% 20%, rgba(255,255,255,.04) 0 1px, transparent 1px) 0 0 / 5px 5px,
+          radial-gradient(circle at 50% 80%, rgba(0,0,0,.06) 0 1px, transparent 1px) 0 0 / 7px 7px; }
+
+      .label { font-weight: 700; font-size: 34px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-text); }
+      .label.warn { color: var(--warn-text); }
+      .num { font-weight: 900; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 0.95;
+        background: linear-gradient(180deg, #ffffff 30%, #cfe0ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+        filter: drop-shadow(0 0 22px rgba(59, 130, 246, 0.55)); }
+      .glass { background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.03) 45%, rgba(255,255,255,.05)), var(--surface);
+        border: 1px solid var(--edge); border-radius: 26px; box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 24px 60px rgba(0,0,0,.55); }
+
+      /* ---------- split panel (speaker left, panel right) ---------- */
+      .split { position: absolute; inset: 0; z-index: 10; }
+      .split .shade { position: absolute; top: 0; bottom: 0; right: 0; width: 1100px;
+        background: linear-gradient(90deg, rgba(10,10,15,0) 0%, rgba(10,10,15,.88) 22%, rgba(10,10,15,.96) 40%); }
+      .split .shade.red { background: linear-gradient(90deg, rgba(18,8,10,0) 0%, rgba(18,8,10,.88) 22%, rgba(16,8,10,.96) 40%); }
+      .split .panel { position: absolute; top: 0; right: 0; width: 900px; height: 880px; padding: 100px 90px 30px 40px;
+        display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+
+      /* rows: icon + text, with ✕ or ✓ */
+      .row { display: flex; align-items: center; gap: 24px; padding: 20px 28px; position: relative; }
+      .row .tx { font-size: 50px; font-weight: 800; line-height: 1.08; flex: 1; position: relative; }
+      .row .tx small { display: block; font-size: 32px; font-weight: 700; color: var(--text-dim); margin-top: 6px; }
+      .row .strike { position: absolute; left: -6px; right: -6px; top: 52%; height: 6px; border-radius: 3px; background: var(--warn); transform-origin: 0 50%; transform: scaleX(0); }
+      .x { width: 72px; height: 72px; flex: none; border-radius: 50%; border: 4px solid var(--warn);
+        display: grid; place-items: center; color: var(--warn); font-size: 44px; font-weight: 900; box-shadow: 0 0 24px rgba(239,68,68,.5); }
+      .ck { width: 66px; height: 66px; flex: none; border-radius: 50%; background: var(--accent); display: grid; place-items: center; box-shadow: 0 0 22px var(--accent-glow); }
+      .ck::after { content: ""; width: 26px; height: 14px; border-left: 6px solid #fff; border-bottom: 6px solid #fff; transform: rotate(-45deg) translate(2px, -3px); }
+      .dot-ic { width: 66px; height: 66px; flex: none; border-radius: 18px; display: grid; place-items: center; font-size: 36px; font-weight: 900;
+        background: rgba(239,68,68,.16); border: 2px solid rgba(239,68,68,.6); color: var(--warn-text); }
+      .dot-ic.blue { background: rgba(59,130,246,.16); border-color: rgba(124,180,255,.7); color: var(--accent-text); }
+
+      /* ---------- S1 the "marketing expert" ---------- */
+      .vid { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+      .vid .screen { height: 250px; border-radius: 16px; position: relative; overflow: hidden;
+        background: radial-gradient(circle at 70% 30%, rgba(124,180,255,.35), transparent 60%), linear-gradient(160deg, #1e293b, #0b1220); }
+      .vid .play { position: absolute; left: 50%; top: 50%; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%;
+        background: rgba(255,255,255,.14); border: 3px solid rgba(255,255,255,.8); }
+      .vid .play::after { content: ""; position: absolute; left: 42px; top: 30px; border-left: 38px solid #fff; border-top: 24px solid transparent; border-bottom: 24px solid transparent; }
+      .vid .bar { position: absolute; left: 0; bottom: 0; height: 8px; width: 100%; background: var(--warn); transform-origin: 0 50%; }
+      .vid .title { font-size: 40px; font-weight: 800; line-height: 1.12; }
+      .vid .meta { display: flex; gap: 14px; }
+      .pill { padding: 8px 20px; border-radius: 999px; font-size: 30px; font-weight: 800; border: 1.5px solid rgba(255,255,255,.25); background: rgba(255,255,255,.06); }
+      .pill.warn { border-color: rgba(239,68,68,.7); background: rgba(239,68,68,.16); color: #ffd4d4; }
+      .stamp { position: absolute; right: 70px; bottom: 120px; padding: 18px 34px; border: 7px solid var(--warn); border-radius: 18px;
+        color: var(--warn); font-weight: 900; text-transform: uppercase; text-align: center; line-height: 0.95; transform: rotate(-8deg);
+        background: rgba(20, 6, 8, 0.82); box-shadow: 0 0 40px rgba(239,68,68,.45); }
+      .stamp .big { font-size: 108px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+      .stamp .sm { font-size: 46px; letter-spacing: 0.1em; }
+
+      /* ---------- S2 good / bad ---------- */
+      .gb { position: absolute; inset: 0; display: flex; }
+      .gb .half { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding-bottom: 160px; position: relative; }
+      .gb .half .w { font-size: 150px; font-weight: 900; letter-spacing: -0.02em; line-height: 0.95; }
+      .gb .half .n { font-size: 64px; font-weight: 800; letter-spacing: 0.3em; color: var(--text-dim); }
+      .gb .good .w { color: var(--accent-text); text-shadow: 0 0 40px rgba(59,130,246,.6); }
+      .gb .bad .w { color: var(--warn-text); text-shadow: 0 0 40px rgba(239,68,68,.6); }
+      .gb .divider { position: absolute; left: 50%; top: 160px; bottom: 300px; width: 2px; background: rgba(255,255,255,.18); }
+      .gb .or { position: absolute; left: 50%; top: 395px; width: 110px; height: 110px; margin-left: -55px; border-radius: 50%;
+        display: grid; place-items: center; font-size: 40px; font-weight: 900; background: var(--bg); border: 2px solid rgba(255,255,255,.25); }
+
+      /* ---------- S3 burn ---------- */
+      .burn { overflow: hidden; }
+      .burn .ember { position: absolute; inset: 0; border-radius: 26px; pointer-events: none; opacity: 0;
+        background: radial-gradient(ellipse 120% 90% at 50% 120%, rgba(249,115,22,.85), rgba(239,68,68,.55) 45%, transparent 75%); }
+      .money { display: flex; gap: 18px; padding-left: 10px; }
+      .bill { width: 120px; height: 66px; border-radius: 10px; background: linear-gradient(160deg, #3f6212, #1a2e05); border: 2px solid #84cc16;
+        display: grid; place-items: center; font-size: 38px; font-weight: 900; color: #d9f99d; }
+
+      /* ---------- full-screen ---------- */
+      .full { position: absolute; inset: 0; z-index: 20; }
+      .center-stack { position: absolute; inset: 0; padding: 80px 120px 230px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; }
+      .figs .line { font-size: 74px; font-weight: 900; letter-spacing: -0.01em; }
+      .figs .num { font-size: 300px; }
+      .figs .num .amp { font-size: 200px; padding: 0 20px; }
+      .figs .line2 { font-size: 92px; font-weight: 900; letter-spacing: 0.12em; color: var(--accent-text); }
+
+      /* ---------- pop chips (speaker right, chip left) ---------- */
+      .pop { position: absolute; left: 90px; top: 150px; z-index: 12; width: 660px; padding: 30px 34px; display: flex; flex-direction: column; gap: 14px; }
+      .pop .k { font-size: 32px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+      .pop .big { font-size: 76px; font-weight: 900; line-height: 1; letter-spacing: -0.01em; position: relative; }
+      .pop .big .strike { position: absolute; left: -8px; right: -8px; top: 50%; height: 8px; border-radius: 4px; background: var(--warn); transform-origin: 0 50%; transform: scaleX(0); }
+      .pop .xs { position: absolute; right: -26px; top: -26px; width: 84px; height: 84px; border-radius: 50%; background: var(--warn);
+        display: grid; place-items: center; font-size: 50px; font-weight: 900; color: #fff; box-shadow: 0 0 30px rgba(239,68,68,.7); }
+      .receipt .ln { display: flex; justify-content: space-between; align-items: center; font-size: 44px; font-weight: 800; padding: 10px 0; border-bottom: 2px dashed rgba(255,255,255,.18); }
+      .receipt .ln b { color: var(--accent-text); font-size: 40px; }
+
+      /* ---------- pipeline bars ---------- */
+      .chart { height: 300px; display: flex; align-items: flex-end; gap: 22px; padding: 26px 30px 0; border-bottom: 3px solid rgba(124,180,255,.5); }
+      .chart .b { flex: 1; border-radius: 12px 12px 0 0; background: linear-gradient(180deg, #7cb4ff, #1d4ed8); box-shadow: 0 0 22px rgba(59,130,246,.5); transform-origin: 50% 100%; }
+
+      .big-word { font-size: 104px; font-weight: 900; letter-spacing: -0.02em; line-height: 0.95; }
+      .big-word.blue { color: var(--accent-text); text-shadow: 0 0 40px rgba(59,130,246,.6); }
+
+      /* ---------- down arrow + end card ---------- */
+      .arrow { position: absolute; left: 50%; bottom: 210px; z-index: 15; width: 120px; height: 120px; margin-left: -60px; border-radius: 50%;
+        background: var(--accent); box-shadow: 0 0 40px rgba(59,130,246,.8); display: grid; place-items: center; }
+      .arrow::after { content: ""; width: 34px; height: 34px; border-right: 10px solid #fff; border-bottom: 10px solid #fff; transform: translateY(-8px) rotate(45deg); }
+      .endcard { position: absolute; inset: 0; z-index: 30; }
+      .endcard .cta-t { font-size: 120px; font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
+      .endcard .cta-t em { font-style: normal; color: var(--accent-text); text-shadow: 0 0 40px rgba(59,130,246,.6); }
+      .endcard .cta-s { font-size: 46px; font-weight: 700; color: var(--text-dim); }
+      .endcard .arrow { position: relative; left: auto; bottom: auto; margin: 26px 0 0; }
+
+      /* ---------- captions ---------- */
+      #captions { position: absolute; left: 0; right: 0; bottom: 54px; height: 120px; z-index: 40; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; }
+      .cg { position: absolute; bottom: 0; max-width: 1680px; padding: 10px 30px 14px; border-radius: 22px; background: rgba(6, 9, 16, 0.66);
+        font-weight: 800; font-size: 72px; line-height: 1.12; letter-spacing: -0.01em; text-align: center; opacity: 0; visibility: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+      .cw { display: inline-block; opacity: 0.42; }
+      .cw.a { color: var(--accent-text); text-shadow: 0 0 22px rgba(59,130,246,.7); }
+      .cw.w { color: var(--warn-text); text-shadow: 0 0 20px rgba(239,68,68,.55); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="190.03" data-width="1920" data-height="1080">
+
+      <!-- ===== CAMERA: body cut (0-167.8) then CTA placeholder (167.8-185.433) ===== -->
+      <div id="cam">
+        <video id="aroll" src="assets/a-roll.mp4" muted playsinline data-start="0" data-duration="167.8" data-track-index="0"></video>
+        <video id="ctaroll" src="assets/cta.mp4" muted playsinline data-start="167.8" data-duration="17.633" data-track-index="0"></video>
+      </div>
+      <div id="camvig" class="cam-vignette clip" data-start="0" data-duration="185.433" data-track-index="1"></div>
+
+      <!-- ===== S1 split: the "marketing expert" (3.7-13.5) ===== -->
+      <div id="s-kid" class="split clip" data-start="3.7" data-duration="9.8" data-track-index="2">
+        <div class="shade red"></div>
+        <div class="panel">
+          <div class="label warn" id="k-label">The "marketing expert"</div>
+          <div class="vid glass" id="k-vid">
+            <div class="screen"><div class="play"></div><div class="bar" id="k-bar"></div></div>
+            <div class="title">How To Get Rich With Marketing</div>
+            <div class="meta"><span class="pill warn" id="k-one">1 video watched</span><span class="pill" id="k-mil">"Millionaire overnight"</span></div>
+          </div>
+        </div>
+        <div class="stamp" id="k-stamp"><div class="big">$<span id="k-num">0</span></div><div class="sm">Retainer</div></div>
+      </div>
+
+      <!-- ===== S2 full: good news or bad news? (13.5-17.1) ===== -->
+      <div id="s-gb" class="full clip" data-start="13.5" data-duration="3.6" data-track-index="3">
+        <div class="canvas"><div class="glow"></div><div class="grid"></div><div class="vig"></div></div>
+        <div class="gb">
+          <div class="half good" id="gb-good"><div class="w">GOOD</div><div class="n">NEWS</div></div>
+          <div class="half bad" id="gb-bad"><div class="w">BAD</div><div class="n">NEWS</div></div>
+          <div class="divider" id="gb-div"></div>
+          <div class="or" id="gb-or">OR</div>
+        </div>
+      </div>
+
+      <!-- ===== S3 split: the bad news (19.45-28.4) ===== -->
+      <div id="s-bad" class="split clip" data-start="19.45" data-duration="8.95" data-track-index="4">
+        <div class="shade red"></div>
+        <div class="panel" style="gap: 20px">
+          <div class="label warn" id="b-label">The bad news: you got burned by</div>
+          <div class="row glass burn" id="b-1"><div class="dot-ic">✕</div><div class="tx">Angie's List</div><div class="ember"></div></div>
+          <div class="row glass burn" id="b-2"><div class="dot-ic">✕</div><div class="tx">HomeAdvisor</div><div class="ember"></div></div>
+          <div class="row glass burn" id="b-3"><div class="dot-ic">✕</div><div class="tx">Thumbtack</div><div class="ember"></div></div>
+          <div class="money" id="b-money"><div class="bill">$</div><div class="bill">$</div><div class="bill">$</div><div class="bill">$</div><div class="bill">$</div></div>
+        </div>
+      </div>
+
+      <!-- ===== S4 full: the good news (34.55-38.2) ===== -->
+      <div id="s-figs" class="full figs clip" data-start="34.55" data-duration="3.65" data-track-index="5">
+        <div class="canvas"><div class="glow"></div><div class="grid"></div><div class="vig"></div></div>
+        <div class="center-stack">
+          <div class="label" id="f-label">The good news</div>
+          <div class="line" id="f-l1">Scaled multiple companies past</div>
+          <div class="num"><span id="f-7">7</span><span class="amp" id="f-amp">&amp;</span><span id="f-8">8</span></div>
+          <div class="line2" id="f-l2">FIGURES</div>
+        </div>
+      </div>
+
+      <!-- ===== S5 split: who we work with (41.567-47.4) ===== -->
+      <div id="s-who" class="split clip" data-start="41.567" data-duration="5.833" data-track-index="6">
+        <div class="shade"></div>
+        <div class="panel" style="gap: 24px">
+          <div class="label" id="w-label">We work with</div>
+          <div class="big-word" id="w-1">Construction</div>
+          <div class="big-word blue" id="w-2">businesses</div>
+          <div class="row glass" id="w-3"><div class="dot-ic blue">⌖</div><div class="tx">All across the US</div></div>
+          <div class="row glass" id="w-4"><div class="ck"></div><div class="tx">More work opportunities</div></div>
+          <div class="row glass" id="w-5"><div class="ck"></div><div class="tx">More estimates</div></div>
+        </div>
+      </div>
+
+      <!-- ===== S6 pop: 20 minutes convincing you? (53.55-60.933) ===== -->
+      <div id="p-20" class="pop glass clip" data-start="53.55" data-duration="7.383" data-track-index="7">
+        <div class="k">If I have to spend</div>
+        <div class="big"><span class="num" id="p20-num">0</span> minutes</div>
+        <div class="k">convincing you more work matters</div>
+        <div class="xs" id="p20-x">✕</div>
+      </div>
+
+      <!-- ===== S7 split: what other agencies give you (67.033-78.467) ===== -->
+      <div id="s-leads" class="split clip" data-start="67.033" data-duration="11.434" data-track-index="8">
+        <div class="shade red"></div>
+        <div class="panel" style="gap: 20px">
+          <div class="label warn" id="l-label">"More leads" really means</div>
+          <div class="row glass" id="l-1"><div class="dot-ic">1</div><div class="tx">A name<span class="strike"></span></div><div class="x">✕</div></div>
+          <div class="row glass" id="l-2"><div class="dot-ic">2</div><div class="tx">A phone number<span class="strike"></span></div><div class="x">✕</div></div>
+          <div class="row glass" id="l-3"><div class="dot-ic">3</div><div class="tx">A person who doesn't pick up<span class="strike"></span></div><div class="x">✕</div></div>
+        </div>
+      </div>
+
+      <!-- ===== S8 split: predictable pipeline (88.85-97.767) ===== -->
+      <div id="s-pipe" class="split clip" data-start="88.85" data-duration="8.917" data-track-index="9">
+        <div class="shade"></div>
+        <div class="panel" style="gap: 24px">
+          <div class="label" id="pp-label">All I care about</div>
+          <div class="big-word" id="pp-1">Predictable</div>
+          <div class="big-word blue" id="pp-2">pipeline</div>
+          <div class="chart glass" id="pp-chart"><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div><div class="b"></div></div>
+          <div class="row glass" id="pp-3"><div class="ck"></div><div class="tx">That makes financial sense</div></div>
+        </div>
+      </div>
+
+      <!-- ===== S9 pop: millionaire overnight (100.0-103.033) ===== -->
+      <div id="p-mil" class="pop glass clip" data-start="100.0" data-duration="3.033" data-track-index="10">
+        <div class="k">Not guaranteed</div>
+        <div class="big">Millionaire overnight<span class="strike" id="pm-strike"></span></div>
+      </div>
+
+      <!-- ===== S10 split: the guarantee (104.5-116.667) ===== -->
+      <div id="s-guar" class="split clip" data-start="104.5" data-duration="12.167" data-track-index="11">
+        <div class="shade"></div>
+        <div class="panel" style="gap: 18px">
+          <div class="label" id="g-label">The guarantee: if your</div>
+          <div class="row glass" id="g-1"><div class="ck"></div><div class="tx">Sales team</div></div>
+          <div class="row glass" id="g-2"><div class="ck"></div><div class="tx">Selling structure</div></div>
+          <div class="row glass" id="g-3"><div class="ck"></div><div class="tx">Sales cycle</div></div>
+          <div class="label" id="g-dial" style="font-size: 44px">…are dialed in, and you actually close:</div>
+          <div class="row glass" id="g-4" style="border-color: rgba(124,180,255,.8)"><div class="tx" style="color: var(--accent-text)">Great fit. A lot of money together.</div></div>
+        </div>
+      </div>
+
+      <!-- ===== S11 split: numbers over pitch (120.2-130.6) ===== -->
+      <div id="s-nums" class="split clip" data-start="120.2" data-duration="10.4" data-track-index="12">
+        <div class="shade"></div>
+        <div class="panel" style="gap: 18px">
+          <div class="row glass" id="n-0"><div class="x">✕</div><div class="tx">Buying into a pitch<span class="strike"></span></div></div>
+          <div class="label" id="n-label">You should understand</div>
+          <div class="row glass" id="n-1"><div class="ck"></div><div class="tx">The numbers</div></div>
+          <div class="row glass" id="n-2"><div class="ck"></div><div class="tx">The economics</div></div>
+          <div class="row glass" id="n-3"><div class="ck"></div><div class="tx">Whether you can execute</div></div>
+        </div>
+      </div>
+
+      <!-- ===== S12 pop: magic solution (133.3-138.267) ===== -->
+      <div id="p-magic" class="pop glass clip" data-start="133.3" data-duration="4.967" data-track-index="13">
+        <div class="k">Looking for</div>
+        <div class="big">A magic solution?<span class="strike" id="pmg-strike"></span></div>
+        <div class="k" id="pmg-k2">We're not the one.</div>
+        <div class="xs" id="pmg-x">✕</div>
+      </div>
+
+      <!-- ===== S13 split: what we won't / will do (138.267-146.567) ===== -->
+      <div id="s-will" class="split clip" data-start="138.267" data-duration="8.3" data-track-index="14">
+        <div class="shade"></div>
+        <div class="panel" style="gap: 20px">
+          <div class="row glass" id="wl-1"><div class="x">✕</div><div class="tx">We close for you</div></div>
+          <div class="row glass" id="wl-2"><div class="x">✕</div><div class="tx">We do the work for you</div></div>
+          <div class="row glass" id="wl-3" style="border-color: rgba(124,180,255,.8)"><div class="ck"></div><div class="tx">You have the work</div></div>
+          <div class="big-word blue" id="wl-4" style="font-size: 120px">In abundance.</div>
+        </div>
+      </div>
+
+      <!-- ===== S14 split: on the call (146.567-155.8) ===== -->
+      <div id="s-call" class="split clip" data-start="146.567" data-duration="9.233" data-track-index="15">
+        <div class="shade"></div>
+        <div class="panel" style="gap: 20px">
+          <div class="label" id="c-label">On the call we break down</div>
+          <div class="row glass" id="c-1"><div class="dot-ic blue">1</div><div class="tx">How you acquire clients</div></div>
+          <div class="row glass" id="c-2"><div class="dot-ic blue">2</div><div class="tx">Your current numbers</div></div>
+          <div class="row glass" id="c-3"><div class="dot-ic blue">3</div><div class="tx">Lead gen you've tried before</div></div>
+        </div>
+      </div>
+
+      <!-- ===== S15 pop: straight talk on price (156.967-163.767) ===== -->
+      <div id="p-price" class="pop glass receipt clip" data-start="156.967" data-duration="6.8" data-track-index="16">
+        <div class="k">On the call, straight up</div>
+        <div class="ln" id="pr-1">What it costs <b>✓</b></div>
+        <div class="ln" id="pr-2">How much we charge <b>✓</b></div>
+        <div class="ln" id="pr-3">All the nitty-gritty <b>✓</b></div>
+      </div>
+
+      <!-- ===== CTA: down arrow under "below" (172.4-175.6) ===== -->
+      <div id="cta-arrow" class="arrow clip" data-start="172.4" data-duration="3.2" data-track-index="17"></div>
+
+      <!-- ===== end card (185.433-190.03) ===== -->
+      <div id="s-end" class="endcard clip" data-start="185.1" data-duration="4.93" data-track-index="18">
+        <div class="canvas"><div class="glow"></div><div class="grid"></div><div class="vig"></div></div>
+        <div class="center-stack" style="padding-bottom: 120px">
+          <div class="cta-t" id="e-1">Book your call <em>below</em></div>
+          <div class="arrow" id="e-arrow"></div>
+        </div>
+      </div>
+
+      <!-- ===== captions + texture ===== -->
+      <div id="captions" class="clip" data-start="0" data-duration="185.433" data-track-index="30"></div>
+      <div id="grain" class="grain clip" data-start="0" data-duration="190.03" data-track-index="31"></div>
+
+      <!-- ===== audio ===== -->
+      <audio id="voice" src="assets/voice.m4a" data-start="0" data-duration="185.5" data-track-index="40" data-volume="1"></audio>
+      <audio id="music" src="assets/music-bed-mix.m4a" data-start="0" data-duration="190.03" data-track-index="41" data-volume="0.06"></audio>
+      <!-- SFX: subtle, on reveals and section transitions only (one track each) -->
+      <audio id="sfx-00" src="assets/sfx/hard-cut.mp3" data-start="0.38" data-duration="0.2" data-track-index="50" data-volume="0.25"></audio>
+      <audio id="sfx-01" src="assets/sfx/whoosh.mp3" data-start="3.62" data-duration="0.6" data-track-index="51" data-volume="0.16"></audio>
+      <audio id="sfx-02" src="assets/sfx/pop.mp3" data-start="4.45" data-duration="0.5" data-track-index="52" data-volume="0.2"></audio>
+      <audio id="sfx-03" src="assets/sfx/pop.mp3" data-start="7.2" data-duration="0.5" data-track-index="53" data-volume="0.2"></audio>
+      <audio id="sfx-04" src="assets/sfx/slam.mp3" data-start="9.0" data-duration="0.9" data-track-index="54" data-volume="0.24"></audio>
+      <audio id="sfx-05" src="assets/sfx/whoosh.mp3" data-start="13.45" data-duration="0.6" data-track-index="55" data-volume="0.18"></audio>
+      <audio id="sfx-06" src="assets/sfx/click.wav" data-start="15.18" data-duration="0.4" data-track-index="56" data-volume="0.3"></audio>
+      <audio id="sfx-07" src="assets/sfx/click.wav" data-start="16.38" data-duration="0.4" data-track-index="57" data-volume="0.3"></audio>
+      <audio id="sfx-08" src="assets/sfx/whoosh.mp3" data-start="19.4" data-duration="0.6" data-track-index="58" data-volume="0.16"></audio>
+      <audio id="sfx-09" src="assets/sfx/error.mp3" data-start="21.9" data-duration="0.6" data-track-index="59" data-volume="0.1"></audio>
+      <audio id="sfx-10" src="assets/sfx/error.mp3" data-start="23.02" data-duration="0.6" data-track-index="60" data-volume="0.1"></audio>
+      <audio id="sfx-11" src="assets/sfx/error.mp3" data-start="23.9" data-duration="0.6" data-track-index="61" data-volume="0.1"></audio>
+      <audio id="sfx-12" src="assets/sfx/bass-drop.mp3" data-start="27.2" data-duration="1.1" data-track-index="62" data-volume="0.24"></audio>
+      <audio id="sfx-13" src="assets/sfx/whoosh.mp3" data-start="34.5" data-duration="0.6" data-track-index="63" data-volume="0.18"></audio>
+      <audio id="sfx-14" src="assets/sfx/slam.mp3" data-start="36.62" data-duration="0.9" data-track-index="64" data-volume="0.22"></audio>
+      <audio id="sfx-15" src="assets/sfx/sparkle.mp3" data-start="37.36" data-duration="1.2" data-track-index="65" data-volume="0.12"></audio>
+      <audio id="sfx-16" src="assets/sfx/whoosh.mp3" data-start="41.5" data-duration="0.6" data-track-index="66" data-volume="0.16"></audio>
+      <audio id="sfx-17" src="assets/sfx/click.wav" data-start="45.2" data-duration="0.4" data-track-index="67" data-volume="0.28"></audio>
+      <audio id="sfx-18" src="assets/sfx/click.wav" data-start="46.7" data-duration="0.4" data-track-index="68" data-volume="0.28"></audio>
+      <audio id="sfx-19" src="assets/sfx/pop.mp3" data-start="53.6" data-duration="0.5" data-track-index="69" data-volume="0.2"></audio>
+      <audio id="sfx-20" src="assets/sfx/error.mp3" data-start="58.72" data-duration="0.6" data-track-index="70" data-volume="0.1"></audio>
+      <audio id="sfx-21" src="assets/sfx/whoosh.mp3" data-start="66.98" data-duration="0.6" data-track-index="71" data-volume="0.16"></audio>
+      <audio id="sfx-22" src="assets/sfx/pop.mp3" data-start="71.6" data-duration="0.5" data-track-index="72" data-volume="0.18"></audio>
+      <audio id="sfx-23" src="assets/sfx/pop.mp3" data-start="72.25" data-duration="0.5" data-track-index="73" data-volume="0.18"></audio>
+      <audio id="sfx-24" src="assets/sfx/pop.mp3" data-start="74.72" data-duration="0.5" data-track-index="74" data-volume="0.18"></audio>
+      <audio id="sfx-25" src="assets/sfx/slam.mp3" data-start="77.2" data-duration="0.9" data-track-index="75" data-volume="0.2"></audio>
+      <audio id="sfx-26" src="assets/sfx/whoosh.mp3" data-start="88.8" data-duration="0.6" data-track-index="76" data-volume="0.16"></audio>
+      <audio id="sfx-27" src="assets/sfx/sparkle.mp3" data-start="92.65" data-duration="1.2" data-track-index="77" data-volume="0.12"></audio>
+      <audio id="sfx-28" src="assets/sfx/pop.mp3" data-start="100.05" data-duration="0.5" data-track-index="78" data-volume="0.18"></audio>
+      <audio id="sfx-29" src="assets/sfx/whoosh.mp3" data-start="104.45" data-duration="0.6" data-track-index="79" data-volume="0.16"></audio>
+      <audio id="sfx-30" src="assets/sfx/click.wav" data-start="107.05" data-duration="0.4" data-track-index="80" data-volume="0.28"></audio>
+      <audio id="sfx-31" src="assets/sfx/click.wav" data-start="108.1" data-duration="0.4" data-track-index="81" data-volume="0.28"></audio>
+      <audio id="sfx-32" src="assets/sfx/click.wav" data-start="109.38" data-duration="0.4" data-track-index="82" data-volume="0.28"></audio>
+      <audio id="sfx-33" src="assets/sfx/sparkle.mp3" data-start="114.65" data-duration="1.2" data-track-index="83" data-volume="0.12"></audio>
+      <audio id="sfx-34" src="assets/sfx/whoosh.mp3" data-start="120.15" data-duration="0.6" data-track-index="84" data-volume="0.16"></audio>
+      <audio id="sfx-35" src="assets/sfx/error.mp3" data-start="121.78" data-duration="0.6" data-track-index="85" data-volume="0.1"></audio>
+      <audio id="sfx-36" src="assets/sfx/click.wav" data-start="123.22" data-duration="0.4" data-track-index="86" data-volume="0.28"></audio>
+      <audio id="sfx-37" src="assets/sfx/click.wav" data-start="124.02" data-duration="0.4" data-track-index="87" data-volume="0.28"></audio>
+      <audio id="sfx-38" src="assets/sfx/click.wav" data-start="128.82" data-duration="0.4" data-track-index="88" data-volume="0.28"></audio>
+      <audio id="sfx-39" src="assets/sfx/pop.mp3" data-start="133.35" data-duration="0.5" data-track-index="89" data-volume="0.18"></audio>
+      <audio id="sfx-40" src="assets/sfx/error.mp3" data-start="136.82" data-duration="0.6" data-track-index="90" data-volume="0.1"></audio>
+      <audio id="sfx-41" src="assets/sfx/whoosh.mp3" data-start="138.22" data-duration="0.6" data-track-index="91" data-volume="0.16"></audio>
+      <audio id="sfx-42" src="assets/sfx/bass-drop.mp3" data-start="145.78" data-duration="1.1" data-track-index="92" data-volume="0.22"></audio>
+      <audio id="sfx-43" src="assets/sfx/whoosh.mp3" data-start="146.52" data-duration="0.6" data-track-index="93" data-volume="0.16"></audio>
+      <audio id="sfx-44" src="assets/sfx/click.wav" data-start="150.02" data-duration="0.4" data-track-index="94" data-volume="0.28"></audio>
+      <audio id="sfx-45" src="assets/sfx/click.wav" data-start="151.86" data-duration="0.4" data-track-index="95" data-volume="0.28"></audio>
+      <audio id="sfx-46" src="assets/sfx/click.wav" data-start="152.9" data-duration="0.4" data-track-index="96" data-volume="0.28"></audio>
+      <audio id="sfx-47" src="assets/sfx/pop.mp3" data-start="158.0" data-duration="0.5" data-track-index="97" data-volume="0.18"></audio>
+      <audio id="sfx-48" src="assets/sfx/pop.mp3" data-start="159.54" data-duration="0.5" data-track-index="98" data-volume="0.18"></audio>
+      <audio id="sfx-49" src="assets/sfx/pop.mp3" data-start="160.58" data-duration="0.5" data-track-index="99" data-volume="0.18"></audio>
+      <audio id="sfx-50" src="assets/sfx/zap.mp3" data-start="172.42" data-duration="0.9" data-track-index="100" data-volume="0.12"></audio>
+      <audio id="sfx-51" src="assets/sfx/whoosh.mp3" data-start="185.05" data-duration="0.6" data-track-index="101" data-volume="0.16"></audio>
+      <audio id="sfx-52" src="assets/sfx/sparkle.mp3" data-start="185.6" data-duration="1.4" data-track-index="102" data-volume="0.12"></audio>
+    </div>
+
+    <script>
+      (function () {
+        var DUR = 190.03, CAM_END = 185.433;
+        var tl = gsap.timeline({ paused: true });
+
+        /* ---------------- camera framing ----------------
+           Every A-roll join is a hard cut that alternates the framing (hides jump
+           cuts). Framing follows the layout and is computed from the measured face
+           position of each piece (assets/faces.js), so the face always stays in frame.
+           The purple border baked into both recordings (48px) is always cropped:
+           translation is clamped so no source pixel within 48px of an edge shows. */
+        var JOINS = [2.233, 3.7, 13.5, 14.433, 17.1, 28.4, 32.433, 38.2, 41.567, 47.4, 52.733, 60.933, 65.333, 67.033, 78.467, 86.8, 97.767, 103.033, 116.667, 120.2, 122.3, 130.6, 132.5, 138.267, 139.733, 146.567, 149.067, 155.8, 156.967, 163.767, 167.8];
+        // layout changes: cam = centred, pop = speaker right (chip left), split = speaker left (panel right), full = covered
+        var LAYOUT = [[0, "cam"], [3.7, "split"], [13.5, "full"], [17.1, "cam"], [19.45, "split"], [28.4, "cam"], [34.55, "full"], [38.2, "cam"],
+          [41.567, "split"], [47.4, "cam"], [53.55, "pop"], [60.933, "cam"], [67.033, "split"], [78.467, "cam"], [88.85, "split"], [97.767, "cam"],
+          [100.0, "pop"], [103.033, "cam"], [104.5, "split"], [116.667, "cam"], [120.2, "split"], [130.6, "cam"], [133.3, "pop"], [138.267, "split"],
+          [146.567, "split"], [155.8, "cam"], [156.967, "pop"], [163.767, "cam"]];
+        // [scale, face target x, face target y] per layout; two variants alternate on consecutive shots
+        var FRAMES = {
+          cam: [[1.16, 960, 470], [1.4, 960, 420]],
+          pop: [[1.3, 1230, 470], [1.42, 1250, 440]],
+          split: [[1.45, 520, 470], [1.52, 520, 470]],
+          full: [[1.16, 960, 470], [1.16, 960, 470]]
+        };
+        var PUSH = { 0: 1.08, 47.4: 1.06, 155.8: 1.06, 167.8: 1.05 }; // stronger push-ins: hook, "I'm not here to convince you", "straight guy", CTA
+        function layoutAt(t) { var l = "cam"; LAYOUT.forEach(function (e) { if (t >= e[0] - 0.001) l = e[1]; }); return l; }
+        function faceAt(t) { var f = FACES[0]; FACES.forEach(function (e) { if (t >= e[0] - 0.001) f = e; }); return f; }
+        function frameFor(t, fr) {
+          var s = fr[0], f = faceAt(t);
+          var x = fr[1] - 960 - (f[1] - 960) * s, y = fr[2] - 540 - (f[2] - 540) * s;
+          var mx = 912 * s - 960, my = 492 * s - 540;
+          return { scale: s, x: Math.max(-mx, Math.min(mx, x)), y: Math.max(-my, Math.min(my, y)) };
+        }
+        var cuts = [0].concat(JOINS); LAYOUT.forEach(function (e) { if (cuts.indexOf(e[0]) < 0) cuts.push(e[0]); });
+        cuts.sort(function (a, b) { return a - b; });
+        var variant = 0, prevLayout = null;
+        cuts.forEach(function (t, i) {
+          var lay = layoutAt(t);
+          variant = lay === prevLayout ? 1 - variant : 0;
+          prevLayout = lay;
+          var f = frameFor(t, FRAMES[lay][variant]);
+          var end = i + 1 < cuts.length ? cuts[i + 1] : CAM_END;
+          tl.set("#cam", f, t);
+          if (lay !== "full") tl.to("#cam", { scale: f.scale * (PUSH[t] || 1.03), duration: end - t, ease: "none" }, t); // slow drift (scale up only: keeps the border hidden)
+        });
+        // cold open: arrive with a short zoom-blur settle
+        tl.fromTo("#cam", { filter: "brightness(1.12) contrast(1.06) saturate(1.04) blur(12px)" },
+          { filter: "brightness(1.12) contrast(1.06) saturate(1.04) blur(0px)", duration: 0.45, ease: "power2.out" }, 0);
+        tl.to("#cam", { opacity: 0, duration: 0.5, ease: "power2.in" }, CAM_END - 0.4);
+
+        /* ---------------- helpers ---------------- */
+        function counter(id, from, to, t, dur, fmt) {
+          var el = document.getElementById(id), o = { v: from };
+          el.textContent = fmt ? fmt(from) : from;
+          tl.to(o, { v: to, duration: dur, ease: "power2.out", onUpdate: function () { var v = Math.round(o.v); el.textContent = fmt ? fmt(v) : v; } }, t);
+        }
+        function sceneIn(sel, t) {
+          tl.fromTo(sel, { opacity: 0, scale: 1.08, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.34, ease: "expo.out" }, t);
+        }
+        function sceneOut(sel, t) { // blur-zoom out, lands exactly on the clip end
+          tl.to(sel, { opacity: 0, scale: 0.97, filter: "blur(16px)", duration: 0.24, ease: "power2.in" }, t - 0.24);
+        }
+        function ambient(sel, t, d) {
+          tl.fromTo(sel + " .glow", { scale: 0.92, opacity: 0.8 }, { scale: 1.06, opacity: 1, duration: d, ease: "sine.inOut" }, t);
+          tl.fromTo(sel + " .grid", { backgroundPosition: "0px 0px" }, { backgroundPosition: "0px 160px", duration: d, ease: "none" }, t);
+        }
+        function panelIn(sel, t) {
+          tl.fromTo(sel + " .shade", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, t);
+        }
+        function labelIn(sel, t) {
+          tl.fromTo(sel, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, t);
+        }
+        function slideIn(sel, t, ease) {
+          tl.fromTo(sel, { opacity: 0, x: 90, filter: "blur(10px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.42, ease: ease || "expo.out" }, t);
+        }
+        function popIn(sel, t, tEnd) {
+          tl.fromTo(sel, { opacity: 0, x: -70, scale: 0.9, filter: "blur(14px)" }, { opacity: 1, x: 0, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "back.out(1.5)" }, t);
+          tl.to(sel, { y: -6, duration: (tEnd - t) / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, t + 0.45);
+          tl.to(sel, { opacity: 0, x: -50, scale: 0.95, filter: "blur(12px)", duration: 0.26, ease: "power2.in" }, tEnd - 0.26);
+        }
+        function xStamp(sel, t) {
+          tl.fromTo(sel, { scale: 2.2, opacity: 0, rotation: -25 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.32, ease: "back.out(2.2)" }, t);
+        }
+        function check(sel, t) {
+          tl.fromTo(sel, { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2)" }, t);
+        }
+
+        /* ---------------- S1 the "marketing expert" (3.7-13.5) ---------------- */
+        panelIn("#s-kid", 3.7);
+        labelIn("#k-label", 3.85);
+        tl.fromTo("#k-vid", { opacity: 0, y: 70, rotationX: 14, filter: "blur(12px)" }, { opacity: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" }, 4.1);
+        tl.fromTo("#k-bar", { scaleX: 0 }, { scaleX: 1, duration: 3.2, ease: "none" }, 4.3); // "watched one video": the progress bar runs
+        tl.fromTo("#k-one", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 4.45);
+        tl.fromTo("#k-mil", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, 7.2);
+        tl.fromTo("#k-stamp", { opacity: 0, scale: 2.6, rotation: -20 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.4, ease: "back.out(1.8)" }, 9.0);
+        counter("k-num", 0, 5000, 9.0, 0.85, function (v) { return v.toLocaleString("en-US"); });
+        tl.to("#k-vid", { opacity: 0.55, duration: 0.5, ease: "power1.out" }, 10.8); // "I feel personally sorry for you"
+        tl.to("#k-stamp", { y: -8, duration: 1.3, ease: "sine.inOut", yoyo: true, repeat: 1 }, 10.0);
+        sceneOut("#s-kid", 13.5);
+
+        /* ---------------- S2 good news or bad news? (13.5-17.1) ---------------- */
+        sceneIn("#s-gb", 13.5); ambient("#s-gb", 13.5, 3.6);
+        tl.fromTo("#gb-div", { scaleY: 0 }, { scaleY: 1, duration: 0.4, ease: "power3.out" }, 13.6);
+        tl.fromTo("#gb-or", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 13.75);
+        tl.fromTo("#gb-good", { opacity: 0.15, x: -60, filter: "blur(8px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 15.15);
+        tl.fromTo("#gb-bad", { opacity: 0.15, x: 60, filter: "blur(8px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 16.35);
+        tl.to("#gb-good", { opacity: 0.35, duration: 0.3, ease: "power1.out" }, 16.35);
+        sceneOut("#s-gb", 17.1);
+
+        /* ---------------- S3 the bad news: burned (19.45-28.4) ---------------- */
+        panelIn("#s-bad", 19.45);
+        labelIn("#b-label", 19.55);
+        [["#b-1", 21.88, "expo.out"], ["#b-2", 23.0, "power4.out"], ["#b-3", 23.88, "back.out(1.4)"]].forEach(function (b) { slideIn(b[0], b[1], b[2]); });
+        tl.fromTo("#b-money .bill", { opacity: 0, y: 30, rotation: -10 }, { opacity: 1, y: 0, rotation: 0, duration: 0.3, ease: "back.out(2)", stagger: 0.08 }, 24.85);
+        tl.to("#s-bad .burn .ember", { opacity: 0.55, duration: 0.6, ease: "power1.out" }, 25.95); // "lighting it on fire"
+        tl.to("#b-money .bill", { backgroundColor: "#7c2d12", borderColor: "#f97316", color: "#fed7aa", duration: 0.5, ease: "power1.out", stagger: 0.06 }, 26.0);
+        // "setting it ablaze": everything goes up
+        tl.to("#s-bad .burn .ember", { opacity: 1, duration: 0.25, ease: "power2.out" }, 27.2);
+        tl.to("#s-bad .burn, #b-money .bill", { y: -26, opacity: 0.12, filter: "blur(10px)", duration: 0.9, ease: "power2.in", stagger: 0.05 }, 27.45);
+        sceneOut("#s-bad", 28.4);
+
+        /* ---------------- S4 the good news: 7 & 8 figures (34.55-38.2) ---------------- */
+        sceneIn("#s-figs", 34.55); ambient("#s-figs", 34.55, 3.65);
+        labelIn("#f-label", 34.65);
+        tl.fromTo("#f-l1", { opacity: 0, y: 30, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.35, ease: "power3.out" }, 34.75);
+        tl.fromTo("#f-7", { opacity: 0, scale: 2.2, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 36.6);
+        tl.fromTo("#f-amp", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.out" }, 36.95);
+        tl.fromTo("#f-8", { opacity: 0, scale: 2.2, filter: "blur(18px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 37.08);
+        tl.fromTo("#f-l2", { opacity: 0, scaleX: 1.6, filter: "blur(10px)" }, { opacity: 1, scaleX: 1, filter: "blur(0px)", duration: 0.45, ease: "power3.out" }, 37.34);
+        sceneOut("#s-figs", 38.2);
+
+        /* ---------------- S5 who we work with (41.567-47.4) ---------------- */
+        panelIn("#s-who", 41.567);
+        labelIn("#w-label", 41.65);
+        tl.fromTo("#w-1", { opacity: 0, x: 80, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 42.2);
+        tl.fromTo("#w-2", { opacity: 0, x: 80, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 42.75);
+        slideIn("#w-3", 43.35, "back.out(1.3)");
+        slideIn("#w-4", 45.15, "expo.out"); check("#w-4 .ck", 45.25);
+        slideIn("#w-5", 46.65, "power3.out"); check("#w-5 .ck", 46.75);
+        sceneOut("#s-who", 47.4);
+
+        /* ---------------- S6 pop: 20 minutes? (53.55-60.933) ---------------- */
+        popIn("#p-20", 53.55, 60.933);
+        counter("p20-num", 0, 20, 53.65, 0.6);
+        xStamp("#p20-x", 58.7); // "you probably won't even get along"
+
+        /* ---------------- S7 what "more leads" means (67.033-78.467) ---------------- */
+        panelIn("#s-leads", 67.033);
+        labelIn("#l-label", 67.15);
+        [["#l-1", 71.58, "expo.out"], ["#l-2", 72.22, "power4.out"], ["#l-3", 74.7, "back.out(1.3)"]].forEach(function (l) { slideIn(l[0], l[1], l[2]); });
+        // "We don't do any of that funny business": strike + stamp all three
+        ["#l-1", "#l-2", "#l-3"].forEach(function (s, i) {
+          var t = 76.2 + i * 0.22;
+          tl.fromTo(s + " .strike", { scaleX: 0 }, { scaleX: 1, duration: 0.28, ease: "power3.out" }, t);
+          tl.fromTo(s + " .x", { scale: 2.2, opacity: 0, rotation: -25 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.32, ease: "back.out(2.2)" }, t);
+          tl.to(s, { opacity: 0.6, duration: 0.4, ease: "power1.out" }, t + 0.35);
+        });
+        sceneOut("#s-leads", 78.467);
+
+        /* ---------------- S8 predictable pipeline (88.85-97.767) ---------------- */
+        panelIn("#s-pipe", 88.85);
+        labelIn("#pp-label", 88.95);
+        tl.fromTo("#pp-1", { opacity: 0, x: 80, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 90.4);
+        tl.fromTo("#pp-2", { opacity: 0, x: 80, filter: "blur(12px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.4, ease: "power4.out" }, 92.62);
+        tl.fromTo("#pp-chart", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 91.2);
+        var H = [28, 40, 52, 66, 80, 100];
+        document.querySelectorAll("#pp-chart .b").forEach(function (b, i) { b.style.height = H[i] + "%"; });
+        tl.fromTo("#pp-chart .b", { scaleY: 0 }, { scaleY: 1, duration: 0.5, ease: "back.out(1.6)", stagger: 0.14 }, 92.7);
+        slideIn("#pp-3", 94.5, "back.out(1.3)"); check("#pp-3 .ck", 94.6);
+        sceneOut("#s-pipe", 97.767);
+
+        /* ---------------- S9 pop: millionaire overnight (100.0-103.033) ---------------- */
+        popIn("#p-mil", 100.0, 103.033);
+        tl.fromTo("#pm-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 102.4);
+
+        /* ---------------- S10 the guarantee (104.5-116.667) ---------------- */
+        panelIn("#s-guar", 104.5);
+        labelIn("#g-label", 104.6);
+        [["#g-1", 107.0, "expo.out"], ["#g-2", 108.05, "power4.out"], ["#g-3", 109.33, "back.out(1.3)"]].forEach(function (g) {
+          slideIn(g[0], g[1], g[2]);
+          tl.set(g[0] + " .ck", { scale: 0 }, g[1]);
+        });
+        tl.fromTo("#g-dial", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 110.25);
+        tl.fromTo("#s-guar .ck", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2)", stagger: 0.12, immediateRender: false }, 110.3); // "dialed in": all three tick
+        tl.fromTo("#g-4", { opacity: 0, scale: 0.85, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "back.out(1.6)" }, 114.62);
+        tl.to("#g-4", { boxShadow: "0 0 50px rgba(59,130,246,.75), inset 0 1px 0 rgba(255,255,255,.22)", duration: 0.5, ease: "power2.out" }, 115.3);
+        sceneOut("#s-guar", 116.667);
+
+        /* ---------------- S11 numbers over pitch (120.2-130.6) ---------------- */
+        panelIn("#s-nums", 120.2);
+        slideIn("#n-0", 120.4, "expo.out");
+        tl.set("#n-0 .x", { opacity: 0 }, 120.4);
+        tl.fromTo("#n-0 .strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 121.75);
+        xStamp("#n-0 .x", 121.75);
+        tl.to("#n-0", { opacity: 0.6, duration: 0.4, ease: "power1.out" }, 122.1);
+        labelIn("#n-label", 122.35);
+        slideIn("#n-1", 123.2, "power4.out"); check("#n-1 .ck", 123.3);
+        slideIn("#n-2", 124.0, "back.out(1.3)"); check("#n-2 .ck", 124.1);
+        slideIn("#n-3", 128.8, "expo.out"); check("#n-3 .ck", 128.9);
+        sceneOut("#s-nums", 130.6);
+
+        /* ---------------- S12 pop: magic solution (133.3-138.267) ---------------- */
+        popIn("#p-magic", 133.3, 138.267);
+        tl.fromTo("#pmg-k2", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 136.8);
+        tl.fromTo("#pmg-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 136.8);
+        xStamp("#pmg-x", 136.8);
+
+        /* ---------------- S13 won't / will (138.267-146.567) ---------------- */
+        panelIn("#s-will", 138.267);
+        slideIn("#wl-1", 138.8, "expo.out"); tl.set("#wl-1 .x", { opacity: 0 }, 138.8); xStamp("#wl-1 .x", 139.4);
+        slideIn("#wl-2", 140.62, "power4.out"); tl.set("#wl-2 .x", { opacity: 0 }, 140.62); xStamp("#wl-2 .x", 141.05);
+        tl.to("#wl-1, #wl-2", { opacity: 0.55, duration: 0.4, ease: "power1.out" }, 141.5);
+        slideIn("#wl-3", 143.85, "back.out(1.4)"); check("#wl-3 .ck", 143.95);
+        tl.fromTo("#wl-4", { opacity: 0, scale: 1.4, filter: "blur(16px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.45, ease: "expo.out" }, 145.78);
+        sceneOut("#s-will", 146.567);
+
+        /* ---------------- S14 on the call (146.567-155.8) ---------------- */
+        panelIn("#s-call", 146.567);
+        labelIn("#c-label", 146.9);
+        [["#c-1", 150.0, "expo.out"], ["#c-2", 151.84, "power4.out"], ["#c-3", 152.88, "back.out(1.3)"]].forEach(function (c) {
+          slideIn(c[0], c[1], c[2]);
+          tl.fromTo(c[0] + " .dot-ic", { scale: 0.5 }, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" }, c[1] + 0.1);
+        });
+        sceneOut("#s-call", 155.8);
+
+        /* ---------------- S15 pop: price, straight up (156.967-163.767) ---------------- */
+        popIn("#p-price", 156.967, 163.767);
+        [["#pr-1", 158.0], ["#pr-2", 159.52], ["#pr-3", 160.56]].forEach(function (p) {
+          tl.fromTo(p[0], { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out" }, p[1]);
+          tl.fromTo(p[0] + " b", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(2.4)" }, p[1] + 0.15);
+        });
+
+        /* ---------------- CTA placeholder: "below" ---------------- */
+        tl.fromTo("#cta-arrow", { opacity: 0, y: -40, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(2)" }, 172.4);
+        tl.to("#cta-arrow", { y: 18, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 5 }, 172.8);
+        tl.to("#cta-arrow", { opacity: 0, duration: 0.3, ease: "power2.in" }, 175.3);
+
+        /* ---------------- end card (final scene: fades allowed) ---------------- */
+        tl.fromTo("#s-end", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 185.1);
+        ambient("#s-end", 185.1, 4.93);
+        tl.fromTo("#e-1", { opacity: 0, y: 40, filter: "blur(12px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, 185.45);
+        tl.fromTo("#e-arrow", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2)" }, 186.3);
+        tl.to("#e-arrow", { y: 16, duration: 0.5, ease: "sine.inOut", yoyo: true, repeat: 3 }, 186.8);
+        tl.to("#s-end .center-stack", { opacity: 0, duration: 0.5, ease: "power2.in" }, 189.5);
+
+        /* ---------------- captions ---------------- */
+        var host = document.getElementById("captions");
+        (window.CAPTIONS || []).forEach(function (g, gi) {
+          var el = document.createElement("div");
+          el.className = "cg"; el.id = "cg-" + gi;
+          g.words.forEach(function (w, wi) {
+            var s = document.createElement("span");
+            s.className = "cw" + (w.k ? " " + w.k : ""); s.id = "cg-" + gi + "-" + wi; s.textContent = w.t;
+            if (wi > 0) el.appendChild(document.createTextNode(" "));
+            el.appendChild(s);
+          });
+          host.appendChild(el);
+          tl.fromTo(el, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" }, g.start);
+          g.words.forEach(function (w, wi) {
+            var sel = "#cg-" + gi + "-" + wi;
+            tl.fromTo(sel, { opacity: 0.42 }, { opacity: 1, duration: 0.08, ease: "none" }, w.s);
+            if (w.k) tl.fromTo(sel, { y: -10 }, { y: 0, duration: 0.3, ease: "back.out(2.5)" }, w.s);
+          });
+          tl.set(el, { autoAlpha: 0 }, g.end); // one group visible at a time
+        });
+
+        tl.to({}, { duration: DUR }, 0);
+        window.__timelines = window.__timelines || {};
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

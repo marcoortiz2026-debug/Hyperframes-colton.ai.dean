@@ -1,0 +1,374 @@
+[
+  {
+    "id": "w0",
+    "text": "So",
+    "start": 0.16,
+    "end": 0.4
+  },
+  {
+    "id": "w1",
+    "text": "if",
+    "start": 0.4,
+    "end": 0.56
+  },
+  {
+    "id": "w2",
+    "text": "you're",
+    "start": 0.56,
+    "end": 0.8
+  },
+  {
+    "id": "w3",
+    "text": "serious",
+    "start": 0.8,
+    "end": 1.12
+  },
+  {
+    "id": "w4",
+    "text": "about",
+    "start": 1.12,
+    "end": 1.28
+  },
+  {
+    "id": "w5",
+    "text": "scaling",
+    "start": 1.28,
+    "end": 1.76
+  },
+  {
+    "id": "w6",
+    "text": "your",
+    "start": 1.76,
+    "end": 2
+  },
+  {
+    "id": "w7",
+    "text": "construction",
+    "start": 2,
+    "end": 2.48
+  },
+  {
+    "id": "w8",
+    "text": "business,",
+    "start": 2.48,
+    "end": 3.44
+  },
+  {
+    "id": "w9",
+    "text": "just",
+    "start": 3.44,
+    "end": 3.68
+  },
+  {
+    "id": "w10",
+    "text": "follow",
+    "start": 3.92,
+    "end": 4.32
+  },
+  {
+    "id": "w11",
+    "text": "the",
+    "start": 4.32,
+    "end": 4.48
+  },
+  {
+    "id": "w12",
+    "text": "call",
+    "start": 4.48,
+    "end": 4.88
+  },
+  {
+    "id": "w13",
+    "text": "below.",
+    "start": 4.88,
+    "end": 5.36
+  },
+  {
+    "id": "w14",
+    "text": "We're",
+    "start": 5.36,
+    "end": 5.6
+  },
+  {
+    "id": "w15",
+    "text": "gonna",
+    "start": 5.6,
+    "end": 5.76
+  },
+  {
+    "id": "w16",
+    "text": "follow",
+    "start": 5.76,
+    "end": 6.08
+  },
+  {
+    "id": "w17",
+    "text": "up",
+    "start": 6.08,
+    "end": 6.24
+  },
+  {
+    "id": "w18",
+    "text": "with",
+    "start": 6.24,
+    "end": 6.4
+  },
+  {
+    "id": "w19",
+    "text": "you.",
+    "start": 6.4,
+    "end": 6.72
+  },
+  {
+    "id": "w20",
+    "text": "Our",
+    "start": 6.72,
+    "end": 6.96
+  },
+  {
+    "id": "w21",
+    "text": "team",
+    "start": 6.96,
+    "end": 7.2
+  },
+  {
+    "id": "w22",
+    "text": "will",
+    "start": 7.2,
+    "end": 7.36
+  },
+  {
+    "id": "w23",
+    "text": "call",
+    "start": 7.36,
+    "end": 7.6
+  },
+  {
+    "id": "w24",
+    "text": "you.",
+    "start": 7.6,
+    "end": 7.92
+  },
+  {
+    "id": "w25",
+    "text": "Most",
+    "start": 7.92,
+    "end": 8.16
+  },
+  {
+    "id": "w26",
+    "text": "likely",
+    "start": 8.16,
+    "end": 8.48
+  },
+  {
+    "id": "w27",
+    "text": "someone",
+    "start": 8.56,
+    "end": 8.88
+  },
+  {
+    "id": "w28",
+    "text": "call",
+    "start": 8.88,
+    "end": 9.04
+  },
+  {
+    "id": "w29",
+    "text": "Jaden,",
+    "start": 9.2,
+    "end": 10
+  },
+  {
+    "id": "w30",
+    "text": "or",
+    "start": 10,
+    "end": 10.24
+  },
+  {
+    "id": "w31",
+    "text": "it",
+    "start": 10.32,
+    "end": 10.56
+  },
+  {
+    "id": "w32",
+    "text": "might",
+    "start": 10.56,
+    "end": 10.8
+  },
+  {
+    "id": "w33",
+    "text": "even",
+    "start": 10.8,
+    "end": 10.96
+  },
+  {
+    "id": "w34",
+    "text": "be",
+    "start": 10.96,
+    "end": 11.12
+  },
+  {
+    "id": "w35",
+    "text": "me",
+    "start": 11.12,
+    "end": 11.28
+  },
+  {
+    "id": "w36",
+    "text": "if",
+    "start": 11.36,
+    "end": 11.52
+  },
+  {
+    "id": "w37",
+    "text": "the",
+    "start": 11.52,
+    "end": 11.6
+  },
+  {
+    "id": "w38",
+    "text": "call's",
+    "start": 11.6,
+    "end": 12.08
+  },
+  {
+    "id": "w39",
+    "text": "very,",
+    "start": 12.08,
+    "end": 12.32
+  },
+  {
+    "id": "w40",
+    "text": "very",
+    "start": 12.32,
+    "end": 12.64
+  },
+  {
+    "id": "w41",
+    "text": "important.",
+    "start": 12.64,
+    "end": 13.36
+  },
+  {
+    "id": "w42",
+    "text": "And",
+    "start": 13.36,
+    "end": 13.68
+  },
+  {
+    "id": "w43",
+    "text": "we're",
+    "start": 13.68,
+    "end": 14
+  },
+  {
+    "id": "w44",
+    "text": "gonna",
+    "start": 14,
+    "end": 14.24
+  },
+  {
+    "id": "w45",
+    "text": "make",
+    "start": 14.24,
+    "end": 14.4
+  },
+  {
+    "id": "w46",
+    "text": "sure",
+    "start": 14.4,
+    "end": 14.56
+  },
+  {
+    "id": "w47",
+    "text": "that",
+    "start": 14.56,
+    "end": 14.64
+  },
+  {
+    "id": "w48",
+    "text": "we",
+    "start": 14.64,
+    "end": 14.8
+  },
+  {
+    "id": "w49",
+    "text": "will",
+    "start": 14.8,
+    "end": 14.88
+  },
+  {
+    "id": "w50",
+    "text": "do",
+    "start": 14.96,
+    "end": 15.12
+  },
+  {
+    "id": "w51",
+    "text": "everything",
+    "start": 15.12,
+    "end": 15.44
+  },
+  {
+    "id": "w52",
+    "text": "in",
+    "start": 15.44,
+    "end": 15.6
+  },
+  {
+    "id": "w53",
+    "text": "our",
+    "start": 15.6,
+    "end": 15.76
+  },
+  {
+    "id": "w54",
+    "text": "power",
+    "start": 15.76,
+    "end": 16.08
+  },
+  {
+    "id": "w55",
+    "text": "to",
+    "start": 16.08,
+    "end": 16.24
+  },
+  {
+    "id": "w56",
+    "text": "try",
+    "start": 16.24,
+    "end": 16.4
+  },
+  {
+    "id": "w57",
+    "text": "and",
+    "start": 16.4,
+    "end": 16.56
+  },
+  {
+    "id": "w58",
+    "text": "scale",
+    "start": 16.56,
+    "end": 16.88
+  },
+  {
+    "id": "w59",
+    "text": "you",
+    "start": 16.88,
+    "end": 17.04
+  },
+  {
+    "id": "w60",
+    "text": "guys",
+    "start": 17.04,
+    "end": 17.28
+  },
+  {
+    "id": "w61",
+    "text": "up.",
+    "start": 17.28,
+    "end": 17.52
+  }
+]
