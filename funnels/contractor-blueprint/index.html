@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Mach 1 Growth Firm presents the Contractor Blueprint System for established contractors in every trade." />
+  <title>Mach 1 Growth Firm | Contractor Blueprint System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://assets.cdn.filesafe.space" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Sans:wdth,wght@100,500;100,600;100,700&display=swap" rel="stylesheet" />
+  <style>
+    :root{--ink:#071118;--ink-2:#0a151c;--aqua:#78e8f4;--aqua-soft:#bff8fb;--cream:#f0ede4;--muted:#aac5c7;--line:rgba(139,236,245,.2);--ease:cubic-bezier(.23,1,.32,1)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;width:100%;min-height:100%;background:var(--ink);-webkit-text-size-adjust:100%}
+    body{margin:0;padding:0;width:100%;max-width:100%;background:var(--ink);min-height:100vh;overflow-x:hidden;overflow-x:clip;color:var(--cream);font-family:"DM Sans",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .shell{width:min(1180px,calc(100% - 64px));margin:auto}
+    .label,.brand-text,h1,h2,h3,.button,.nav-link,.section-number{font-family:"Instrument Sans",Arial,sans-serif}
+    body::before{content:"";position:fixed;inset:0;z-index:-10;background:var(--ink);pointer-events:none}
+    body::after{content:"";position:fixed;inset:0;z-index:-9;pointer-events:none;
+      background:
+        radial-gradient(ellipse 70% 46% at 22% 10%, rgba(63,190,220,.18), transparent 60%),
+        radial-gradient(ellipse 60% 44% at 82% 62%, rgba(19,110,150,.16), transparent 60%)}
+    .page{position:relative;width:100%;max-width:100%;margin:0;overflow-x:clip;background:var(--ink)}
+
+    /* ---------- brand mark ---------- */
+    .markbox{display:block;width:auto;height:54px;max-width:180px;flex:0 0 auto;
+      object-fit:contain;object-position:center;
+      filter:drop-shadow(0 5px 14px rgba(0,0,0,.3))}
+
+    .hero{position:relative;width:100%;max-width:100%;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:64px 0 48px}
+    .hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
+      background:
+        radial-gradient(ellipse 66% 48% at 26% 16%, rgba(96,214,240,.16), transparent 62%);
+      animation:poolDrift 24s ease-in-out infinite alternate}
+    .hero-shade{position:absolute;z-index:0;inset:0;pointer-events:none;background:linear-gradient(0deg,rgba(7,17,24,.55),transparent 62%)}
+    .hero-orb{position:absolute;z-index:0;pointer-events:none;top:20%;left:50%;width:min(46vw,580px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 35% 28%,rgba(173,249,253,.9),rgba(59,210,232,.55) 32%,rgba(5,74,109,.04) 70%);filter:blur(20px);opacity:.28;animation:orbPulse 7s ease-in-out infinite}
+    .hero-content{position:relative;z-index:3;width:min(640px,90vw);margin:0 auto}
+    .hero-content .label{justify-content:center}
+    .label{display:flex;align-items:center;margin:0 0 17px;color:var(--aqua);font-size:10px;font-weight:700;letter-spacing:.16em}
+    .label:before{content:none}
+    h1{max-width:600px;margin:0 auto;font-size:clamp(1.9rem,3.6vw,3.4rem);font-weight:600;line-height:1.08;letter-spacing:-.04em;text-wrap:balance}
+    h1 em,h2 em{color:var(--aqua);font-style:normal}
+    .hero-title .word-line{display:block;opacity:0;transform:translateY(30px);filter:blur(6px)}
+    .is-loaded .hero-title .word-line{animation:titleReveal .8s var(--ease) forwards}
+    .is-loaded .hero-title .word-line:nth-child(2){animation-delay:.1s}
+    .is-loaded .hero-title .word-line:nth-child(3){animation-delay:.2s}
+    .hero-copy{max-width:520px;margin:20px auto 0;color:#d2e1e1;font-size:15px;line-height:1.7;opacity:0;transform:translateY(16px)}
+    .is-loaded .hero-copy{animation:copyReveal .8s .4s var(--ease) forwards}
+    .hero-offer{max-width:560px;margin:0 auto 18px;color:var(--aqua-soft);font:700 17px/1.4 "Instrument Sans",sans-serif;letter-spacing:.01em;text-shadow:0 0 18px rgba(120,232,244,.25);opacity:0;transform:translateY(16px)}
+    .is-loaded .hero-offer{animation:copyReveal .8s .3s var(--ease) forwards}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:17px 20px;border:1px solid var(--aqua);background:var(--aqua);color:#071118;font-size:11px;font-weight:700;letter-spacing:.11em;cursor:pointer;touch-action:manipulation;transition:transform .16s var(--ease),background .2s}
+    @media(hover:hover){.button:hover{background:var(--aqua-soft);transform:translateY(-2px)}}
+    .button:active{transform:scale(.97)}
+    .text-link{display:inline-block;color:#f1f3ee;font:700 10px "Instrument Sans",sans-serif;letter-spacing:.12em}
+    @media(hover:hover){.text-link:hover{color:var(--aqua)}}
+
+    /* ---------- arrow nudging the eye down to the calendar ---------- */
+    .hero-cal-nudge{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:1px;margin:20px 0 -4px;color:var(--aqua)}
+    .nudge-arrow{width:20px;height:auto;opacity:.55;animation:nudgeBounce 1.7s ease-in-out infinite}
+    .nudge-arrow.a1{animation-delay:0s}
+    .nudge-arrow.a2{margin-top:-9px;opacity:.9;animation-delay:.15s}
+    @keyframes nudgeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+    /* ---------- calendar embedded directly in the hero ---------- */
+    .hero-calendar{position:relative;z-index:3;width:min(540px,100%);margin:16px auto 0;background:#eaf0ed;border:1px solid rgba(120,232,244,.4);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4);opacity:0;transform:translateY(16px)}
+    .is-loaded .hero-calendar{animation:copyReveal .8s .5s var(--ease) forwards}
+    .hero-cal-bar{padding:11px 14px;background:#eaf0ed;color:#102a31;font:700 9px "Instrument Sans",sans-serif;letter-spacing:.1em;text-align:left;border-bottom:1px solid rgba(16,42,49,.12)}
+    .hero-cal-frame{display:block;width:100%;height:600px;border:0;background:linear-gradient(135deg,#eef5f2,#d5e8e6)}
+    .hero-cal-fallback{margin:0;padding:10px 12px;text-align:center;color:#2f5760;font:600 11px "Instrument Sans",sans-serif}
+    .hero-cal-fallback a{color:#0f5560;text-decoration:underline}
+    .hero-proof-link{position:relative;z-index:3;margin-top:26px}
+
+    .ribbon{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;align-items:center;gap:0;padding:12px clamp(18px,4.8vw,74px);background:transparent;color:#ecf4f1;border-top:1px solid rgba(120,232,244,.24);border-bottom:1px solid rgba(120,232,244,.18)}
+    .ribbon div{display:flex;align-items:center;min-height:52px;padding:0 clamp(16px,2.3vw,37px);gap:11px;border-right:1px solid rgba(120,232,244,.2);font:700 10px "Instrument Sans",sans-serif;letter-spacing:.08em}
+    .ribbon div:first-child{padding-left:0}
+    .ribbon b{display:grid;place-items:center;flex:0 0 auto;width:27px;height:27px;border:1px solid rgba(120,232,244,.52);border-radius:50%;color:var(--aqua);font-size:11px}
+    .ribbon a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin-left:clamp(16px,2.5vw,34px);padding:0 21px;border:1px solid rgba(120,232,244,.65);background:rgba(120,232,244,.08);color:var(--aqua);font:700 10px "Instrument Sans",sans-serif;letter-spacing:.11em;transition:background .2s var(--ease),color .2s var(--ease),transform .2s var(--ease)}
+    @media(hover:hover){.ribbon a:hover{background:var(--aqua);color:#071118;transform:translateY(-1px)}}
+
+    section{width:100%;max-width:100%}
+    section:not(.hero){position:relative}
+    .section{padding:128px 0}
+    .section-head{max-width:780px;margin:0 auto 60px;text-align:center}
+    .section-head .label{justify-content:center}
+    .section-head p{max-width:600px;margin:20px auto 0;color:#a9c5c7;font-size:15px;line-height:1.75}
+    h2{margin:0;font-size:clamp(2.4rem,4vw,4.8rem);line-height:.99;letter-spacing:-.07em;text-wrap:balance}
+
+    /* ---------- proof: booked calendars + client messages ---------- */
+    .proof{overflow:hidden;padding:90px 0;background:transparent}
+    .proof-water{position:absolute;inset:0;z-index:0;pointer-events:none;
+      background:
+        radial-gradient(ellipse 60% 50% at 78% 30%, rgba(48,170,205,.16), transparent 62%),
+        radial-gradient(ellipse 55% 45% at 12% 80%, rgba(16,96,132,.16), transparent 62%)}
+    .proof-wash{position:absolute;z-index:1;inset:0;background:none;pointer-events:none}
+    .proof-inner{position:relative;z-index:2}
+    .proof .section-head{margin-bottom:34px}
+    .proof-label{margin:24px 0 11px;color:var(--aqua);font:700 10px "Instrument Sans",sans-serif;letter-spacing:.14em;text-transform:uppercase}
+    .proof-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+    .proof-grid.texts{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .proof-shot{display:block;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(139,236,245,.2);border-radius:12px;box-shadow:0 16px 35px rgba(0,0,0,.3);transition:transform .22s var(--ease),border-color .22s var(--ease)}
+    @media(hover:hover){.proof-shot:hover{transform:translateY(-5px);border-color:rgba(120,232,244,.58)}}
+    .proof-shot img{display:block;width:100%;height:auto;background:#0b1a21;-webkit-user-drag:none;-webkit-touch-callout:none}
+
+    /* ---------- testimonial videos ---------- */
+    .proof-grid.videos{display:flex;flex-direction:column;align-items:center;gap:16px}
+    .video-quote{width:100%;max-width:420px;margin:0 0 -4px;color:var(--aqua-soft);font:700 17px "Instrument Sans",sans-serif;letter-spacing:.01em;line-height:1.32;text-shadow:0 0 18px rgba(120,232,244,.25)}
+    .proof-shot.video-shot{position:relative;width:100%;max-width:420px;background:#0b1a21}
+    .proof-shot.video-shot video{display:block;width:100%;height:auto;background:#0b1a21}
+    .proof-shot.video-shot.ratio-16-9{aspect-ratio:16/9}
+    .proof-shot.video-shot.ratio-16-9 video{height:100%;object-fit:cover}
+
+    /* ---------- faq ---------- */
+    .faq-section{padding:0 0 110px;background:transparent}
+    .faq-head{max-width:700px;margin:0 auto 34px;text-align:center}
+    .faq-head .label{justify-content:center}
+    .faq-head p{max-width:560px;margin:18px auto 0;color:#a9c5c7;font-size:14px;line-height:1.7}
+    .faq{max-width:780px;margin:0 auto;display:grid;gap:10px}
+    .acc{overflow:hidden;background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:12px}
+    .acc button{position:relative;width:100%;min-height:62px;padding:18px 52px 18px 19px;border:0;background:transparent;color:var(--cream);text-align:left;font:600 15px/1.4 "Instrument Sans",sans-serif;cursor:pointer;touch-action:manipulation}
+    .acc button::after{content:"";position:absolute;right:21px;top:50%;width:10px;height:10px;border-right:2px solid var(--aqua);border-bottom:2px solid var(--aqua);transform:translateY(-70%) rotate(45deg);transition:transform .25s var(--ease)}
+    .acc.open button::after{transform:translateY(-25%) rotate(225deg)}
+    .acc .panel{max-height:0;overflow:hidden;transition:max-height .34s var(--ease)}
+    .acc .panel p{margin:0;padding:0 19px 19px;color:#aac4c6;font-size:14px;line-height:1.7}
+    .acc .panel b{color:var(--cream)}
+
+    .founder{display:grid;grid-template-columns:minmax(300px,.76fr) 1.15fr;gap:10vw;align-items:end;min-height:620px;padding-top:80px;background:transparent;color:var(--cream);overflow:hidden}
+    .founder-portrait{position:relative;align-self:stretch;min-height:510px;max-width:440px;margin:auto;display:flex;align-items:end}
+    .founder-ring{position:absolute;z-index:0;top:30px;left:50%;width:420px;height:420px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(120,232,244,.5),rgba(120,232,244,.16) 60%,transparent 72%);box-shadow:0 0 0 25px rgba(120,232,244,.05),0 0 0 50px rgba(120,232,244,.03)}
+    .founder-portrait img{position:relative;z-index:2;width:100%;max-height:595px;object-fit:contain;object-position:bottom;filter:drop-shadow(18px 8px 22px rgba(0,0,0,.5))}
+    .founder-portrait span{position:absolute;z-index:3;bottom:31px;left:-31px;transform:rotate(-90deg);transform-origin:left bottom;color:rgba(228,245,245,.6);font:700 9px "Instrument Sans",sans-serif;letter-spacing:.17em}
+    .founder-story{max-width:615px;padding-bottom:91px}
+    .founder .label{color:var(--aqua)}
+    .founder h2{font-size:clamp(2.45rem,4vw,4.45rem)}
+    .founder-story>p{margin:27px 0;color:#aac4c6;font-size:15px;line-height:1.75}
+    .quote{margin:28px 0 31px;padding:6px 0 6px 15px;border-left:2px solid var(--aqua);color:var(--cream);font:600 13px/1.5 "Instrument Sans",sans-serif}
+    .button-outline{background:transparent;color:var(--aqua);border-color:var(--aqua)}
+    @media(hover:hover){.button-outline:hover{background:rgba(120,232,244,.12);color:var(--aqua)}}
+
+    .booking{position:relative;overflow:hidden;padding:128px 0;background:transparent;text-align:center}
+    .booking-grid{position:absolute;inset:0;opacity:.34;pointer-events:none;background-image:linear-gradient(rgba(103,221,238,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(103,221,238,.07) 1px,transparent 1px);background-size:44px 44px}
+    .booking-inner{position:relative;z-index:1;max-width:720px;margin:auto}
+    .booking-copy .label{justify-content:center}
+    .booking-copy p{max-width:510px;margin:24px auto 28px;color:#abc6c8;font-size:15px;line-height:1.75}
+    .checks{display:flex;justify-content:center;flex-wrap:wrap;gap:22px;color:#dcebed;font:600 12px "Instrument Sans",sans-serif}
+    .checks span:before{content:"✓";display:inline-grid;place-items:center;width:19px;height:19px;margin-right:9px;background:var(--aqua);border-radius:50%;color:#071118;font-size:11px}
+    .booking .button{margin-top:30px}
+    .booking-note{margin-top:13px;color:rgba(220,235,235,.56);font-size:11px}
+
+    /* ---------- calendar popup (still used by the bottom booking button) ---------- */
+    .booking-modal{position:fixed;z-index:100;inset:0;display:grid;place-items:center;padding:22px;background:rgba(2,10,16,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);opacity:1;visibility:visible;transition:opacity .22s var(--ease),visibility .22s var(--ease)}
+    .booking-modal[aria-hidden="true"]{opacity:0;visibility:hidden;pointer-events:none}
+    .booking-panel{position:relative;width:min(920px,100%);max-height:calc(100vh - 44px);max-height:calc(100dvh - 44px);overflow:auto;-webkit-overflow-scrolling:touch;padding:14px;background:#eaf0ed;border:1px solid rgba(120,232,244,.75);box-shadow:0 28px 80px rgba(0,0,0,.58);transform:translateY(0) scale(1);transition:transform .26s var(--ease)}
+    .booking-modal[aria-hidden="true"] .booking-panel{transform:translateY(18px) scale(.97)}
+    .booking-panel:before{content:"MACH 1 GROWTH FIRM  /  PRIVATE STRATEGY SESSION";display:block;padding:5px 4px 14px;color:#102a31;font:700 9px "Instrument Sans",sans-serif;letter-spacing:.14em}
+    .booking-close{position:absolute;z-index:2;top:12px;right:13px;width:34px;height:34px;border:1px solid #1c5761;background:#f7fbf8;color:#0a1b20;font:500 22px/1 Arial,sans-serif;cursor:pointer;touch-action:manipulation;transition:background .15s var(--ease),transform .15s var(--ease)}
+    @media(hover:hover){.booking-close:hover{background:var(--aqua);transform:rotate(90deg)}}
+    .booking-panel .ghl-calendar{display:block;width:100%;height:min(760px,calc(100vh - 150px));height:min(760px,calc(100dvh - 150px));min-height:420px;border:0;background:linear-gradient(135deg,#eef5f2,#d5e8e6)}
+    .booking-fallback{margin:0;padding:12px 4px 2px;text-align:center;color:#2f5760;font:600 12px "Instrument Sans",sans-serif}
+    .booking-fallback a{color:#0f5560;text-decoration:underline}
+    body.booking-open{overflow:hidden}
+
+    footer{width:100%;max-width:100%;border-top:1px solid rgba(128,233,244,.18);background:transparent}
+    .footer-inner{display:grid;grid-template-columns:1.2fr 1fr auto;gap:28px;align-items:center;padding:28px 0;color:#d8e7e7}
+    .footer-logo{display:flex;align-items:center;gap:11px}
+    .footer-logo .markbox{width:auto;height:64px;max-width:210px}
+    .footer-logo span{font:700 10px/1.1 "Instrument Sans",sans-serif;letter-spacing:.13em}
+    .footer-inner p{margin:0;color:rgba(216,231,231,.52);font:700 9px "Instrument Sans",sans-serif;letter-spacing:.13em;text-align:center}
+    .footer-inner a{color:var(--aqua);font:700 9px "Instrument Sans",sans-serif;letter-spacing:.12em}
+    @media(hover:hover){.footer-inner a:hover{color:white}}
+
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+    .reveal.show{opacity:1;transform:none}
+    .delay-1{transition-delay:.1s}.delay-2{transition-delay:.2s}.delay-3{transition-delay:.3s}
+
+    @keyframes poolDrift{from{transform:scale(1.06) translate3d(-.6%,0,0)}to{transform:scale(1.14) translate3d(1.4%,-1%,0)}}
+    @keyframes orbPulse{0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.22}50%{transform:translate(-50%,-50%) scale(1.08);opacity:.46}}
+    @keyframes titleReveal{to{opacity:1;transform:translateY(0);filter:blur(0)}}
+    @keyframes copyReveal{to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:900px){
+      .shell{width:min(100% - 44px,1180px)}
+      .section,.proof,.booking{padding:90px 0}
+      .section-head,.booking-inner{grid-template-columns:1fr;gap:42px}
+      .section-head{margin-bottom:40px}
+      .founder{grid-template-columns:1fr;padding-top:70px;gap:0}
+      .founder-story{padding-bottom:35px}
+      .founder-portrait{grid-row:2;height:460px;min-height:0}
+      .footer-inner{grid-template-columns:1fr auto}
+      .footer-inner p{display:none}
+    }
+
+    @media(max-width:600px){
+      .shell{width:min(100% - 30px,1180px)}
+      .hero{padding:40px 0 32px}
+      .hero-content{width:min(400px,92vw)}
+      .hero-copy{max-width:330px;font-size:14px}
+      .hero-offer{max-width:340px;font-size:15px}
+      .hero-cal-nudge{margin-top:16px}
+      .hero-calendar{margin-top:14px}
+      .hero-cal-bar{padding:10px 12px;font-size:8.5px}
+      .hero-cal-frame{height:clamp(380px,64vh,540px)}
+      .hero-proof-link{margin-top:20px}
+      .ribbon{grid-template-columns:1fr;padding:9px 15px}
+      .ribbon div{min-height:48px;padding:0 8px;border-right:0;border-bottom:1px solid rgba(120,232,244,.16);font-size:9px}
+      .ribbon div:first-child{padding-left:8px}
+      .ribbon a{min-height:48px;margin:11px 8px 4px;padding:0 16px}
+      .section,.proof,.booking{padding:66px 0}
+      .founder{padding-top:65px}
+      .founder-ring{width:310px;height:310px}
+      .founder-portrait{height:395px}
+      .founder-portrait span{left:-16px}
+      .booking .button,.founder-story .button{min-height:52px;width:100%;max-width:330px}
+
+      /* calendar popup = near full-screen on phones */
+      .booking-modal{padding:12px}
+      .booking-panel{padding:10px;max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
+      .booking-panel:before{padding:9px 52px 14px 2px;font-size:7px}
+      .booking-close{top:8px;right:8px;width:44px;height:44px;font-size:26px}
+      .booking-panel .ghl-calendar{height:calc(100vh - 150px);height:calc(100dvh - 150px);min-height:420px}
+
+      .footer-inner{padding:23px 0}
+      .footer-logo .markbox{width:auto;height:51px;max-width:160px}
+      .footer-logo span{font-size:8px}
+
+      /* testimonials: smooth native swipe rows that bleed to the screen edges */
+      .proof-grid,.proof-grid.texts{
+        display:flex;gap:10px;
+        margin:0 -15px;padding:2px 15px 14px;
+        overflow-x:auto;overflow-y:hidden;
+        scroll-snap-type:x proximity;scroll-padding-left:15px;
+        -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+        touch-action:pan-x pan-y;scrollbar-width:none}
+      .proof-grid::-webkit-scrollbar{display:none}
+      .proof-shot{flex:0 0 78%;min-width:0;scroll-snap-align:start}
+      .proof-grid.texts .proof-shot{flex-basis:72%}
+      .proof-grid.videos{display:flex;flex-direction:column;align-items:center;gap:14px;margin:0 -15px;padding:2px 0 14px}
+      .proof-grid.videos .proof-shot{width:100%;max-width:none}
+      .video-quote{max-width:none;padding:0 15px;font-size:16px}
+      .proof{padding:58px 0}
+      .proof .section-head{margin-bottom:26px}
+      .proof-label{margin-top:19px}
+      .faq-section{padding:0 0 66px}
+      .faq-head{margin-bottom:24px}
+      .acc button{min-height:58px;padding:16px 46px 16px 16px;font-size:14px}
+      .acc .panel p{padding:0 16px 17px;font-size:13.5px}
+    }
+    @media(max-width:380px){
+      h1{font-size:clamp(1.6rem,7.4vw,2rem)}
+      .label{font-size:9px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      .reveal,.hero-title .word-line,.hero-copy,.hero-calendar{opacity:1;transform:none;filter:none}
+      .hero-bg,.nudge-arrow{animation:none!important}
+      *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="top">
+    <main>
+      <section class="hero">
+        <div class="hero-bg"></div><div class="hero-shade"></div><div class="hero-orb"></div>
+        <div class="shell hero-content reveal">
+          <p class="label">THE CONTRACTOR BLUEPRINT SYSTEM</p>
+          <h1 class="hero-title"><span class="word-line">How Contractors Are Booking <em>20+</em> Pre-Qualified Estimates a Month, Without Buying Leads</span></h1>
+          <p class="hero-copy">Learn How Contractors Are Adding An Additional $540,000 Every 60 Days</p>
+          <div class="hero-cal-nudge" aria-hidden="true">
+            <svg class="nudge-arrow a1" viewBox="0 0 24 14" xmlns="http://www.w3.org/2000/svg"><path d="M2 2l10 9 10-9" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg class="nudge-arrow a2" viewBox="0 0 24 14" xmlns="http://www.w3.org/2000/svg"><path d="M2 2l10 9 10-9" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="hero-calendar">
+            <div class="hero-cal-bar">MACH 1 GROWTH FIRM &nbsp;/&nbsp; BOOK YOUR STRATEGY CALL</div>
+            <iframe class="hero-cal-frame ghl-calendar-hero" src="https://api.leadconnectorhq.com/widget/booking/gUBtJXQ2u027MUmPyGOC" title="Book your strategy call" loading="lazy"></iframe>
+            <p class="hero-cal-fallback">Calendar not loading? <a id="hero-cal-fallback-link" href="https://api.leadconnectorhq.com/widget/booking/gUBtJXQ2u027MUmPyGOC" target="_blank" rel="noopener">Open it in a new tab</a></p>
+          </div>
+          <a class="text-link hero-proof-link" href="#proof">▶ &nbsp; VIEW FIELD PROOF</a>
+        </div>
+      </section>
+
+      <section class="ribbon"><div> <b>⌁</b> MARKET SPECIFIC DEMAND</div><div><b>◫</b> MEASURABLE PIPELINE</div><div><b>✓</b> CONTRACTOR READY LEADS</div><a href="#book">START THE DIAGNOSIS →</a></section>
+
+      <section class="proof" id="proof" aria-labelledby="proof-title"><div class="proof-water"></div><div class="proof-wash"></div>
+        <div class="shell proof-inner">
+          <div class="section-head reveal">
+            <h2 id="proof-title">Real calendars. Real conversations.</h2>
+            <p>A look at the appointments and client feedback generated by our campaigns.</p>
+          </div>
+
+          <p class="proof-label reveal">Client messages</p>
+          <div class="proof-grid videos reveal delay-1">
+            <p class="video-quote">“CLOSED 370K IN 30 DAYS SO FAR”</p>
+            <div class="proof-shot video-shot">
+              <video src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6ab41357f07a3cb6d49484c6.mp4" controls playsinline preload="metadata" aria-label="Client testimonial video 1"></video>
+            </div>
+            <p class="video-quote">“THE QUALITY OF THE APPOINTMENTS HAVE BEEN ELITE”</p>
+            <div class="proof-shot video-shot">
+              <video src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6ab3241f7c231bdb64f7613b.mp4" controls playsinline preload="metadata" aria-label="Client testimonial video 2"></video>
+            </div>
+            <p class="video-quote">“CLOSED 50K IN PROFIT IN 2 WEEKS”</p>
+            <div class="proof-shot video-shot">
+              <video src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/698e6971c0866527f02784f8.mp4" controls playsinline preload="metadata" aria-label="Client testimonial video 3"></video>
+            </div>
+            <p class="video-quote">“$256,000 IN 1 MONTH FROM CLOSED DEALS”</p>
+            <div class="proof-shot video-shot ratio-16-9">
+              <video src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6ab32b8218891558b46ee89f.mp4" controls playsinline preload="metadata" aria-label="Client testimonial video 4"></video>
+            </div>
+          </div>
+
+          <div class="proof-grid texts reveal delay-1">
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4ad2361f5d37885a1.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 2">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4ad2361f5d37885a1.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4ad2361f5d37885b2.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 3">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4ad2361f5d37885b2.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4d953a0128b546db7.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 4">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4d953a0128b546db7.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a8cdad6ad59e6cfede9ee50.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 5">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a8cdad6ad59e6cfede9ee50.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a8cdad6353c0407f6cd3828.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 6">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a8cdad6353c0407f6cd3828.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a8cdad6d2fb0244d6f7c784.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 7">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a8cdad6d2fb0244d6f7c784.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f49416bfd53134f0e9.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 8">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f49416bfd53134f0e9.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4dd867dc12dffb388.png" target="_blank" rel="noopener" aria-label="Open client message screenshot 9">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f4dd867dc12dffb388.png" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f566840b0458d90bbd.jpg" target="_blank" rel="noopener" aria-label="Open client message screenshot 10">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f566840b0458d90bbd.jpg" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f5fb8abdad105e6271.jpg" target="_blank" rel="noopener" aria-label="Open final client message screenshot">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aa1c9f5fb8abdad105e6271.jpg" alt="Client feedback message" loading="lazy" decoding="async" draggable="false">
+            </a>
+          </div>
+
+          <p class="proof-label reveal">Booked calendars</p>
+          <div class="proof-grid reveal delay-1">
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf3f4e4091fa65e6882e9f.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 1">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf3f4e4091fa65e6882e9f.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf3f4e30b0f957cc97758e.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 2">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf3f4e30b0f957cc97758e.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf3f4ede8ed1c29f7d3cb3.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 3">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf3f4ede8ed1c29f7d3cb3.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf420fde8ed1c29f7d653f.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 4">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf420fde8ed1c29f7d653f.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4211ff484614db549ea3.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 5">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4211ff484614db549ea3.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4211de8ed1c29f7d655f.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 6">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4211de8ed1c29f7d655f.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf420f30b0f957cc979fcd.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 7">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf420f30b0f957cc979fcd.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4211bdaa5e26a9485bbb.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 8">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4211bdaa5e26a9485bbb.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4210ff484614db549e8d.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 9">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4210ff484614db549e8d.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf42104091fa65e688583e.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 10">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf42104091fa65e688583e.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4210ff484614db549e8e.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 11">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf4210ff484614db549e8e.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+            <a class="proof-shot" href="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf42104091fa65e6885833.png" target="_blank" rel="noopener" aria-label="Open calendar result screenshot 12">
+              <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6aaf42104091fa65e6885833.png" alt="Contractor appointment calendar result" loading="lazy" decoding="async" draggable="false">
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="faq-section" id="faq-section">
+        <div class="shell">
+          <div class="faq-head reveal">
+            <p class="label">ASKED &amp; ANSWERED</p>
+            <h2>Questions contractors<br><em>ask before the call.</em></h2>
+            <p>Clear answers about the appointments, qualification, risk, and territory.</p>
+          </div>
+          <div class="faq">
+            <div class="acc reveal">
+              <button type="button" aria-expanded="false">What exactly is a booked estimate — isn’t this just another lead?</button>
+              <div class="panel"><p>A homeowner who agreed to a specific date, time and address, with your rep expected. Screened for budget, ownership and timeline before it hits your calendar. Nobody on your staff dials, chases or re-confirms — we do that right up to the morning of the appointment.</p></div>
+            </div>
+            <div class="acc reveal delay-1">
+              <button type="button" aria-expanded="false">What if the homeowner cancels or nobody’s home?</button>
+              <div class="panel"><p>You don’t pay for it. Cancellations, no-shows and anything outside your service area get credited back. <b>You only pay per qualified estimate your team actually talks to.</b></p></div>
+            </div>
+            <div class="acc reveal delay-1">
+              <button type="button" aria-expanded="false">We’ve run Meta ads before and got burned. Why is this different?</button>
+              <div class="panel"><p>Most agencies hand you raw form fills and charge the same either way. We own the whole chain — creative, campaigns, speed-to-lead calling, qualification, booking, confirmation and reschedules — and we get paid per qualified estimate. A month of junk is a bad month for us too.</p></div>
+            </div>
+            <div class="acc reveal delay-2">
+              <button type="button" aria-expanded="false">How do you know the homeowner can afford the project?</button>
+              <div class="panel"><p>Every lead is screened for budget range, home ownership, project readiness and how soon they want to get started. Borderline cases get a live call from our team. You never talk to an unbooked lead.</p></div>
+            </div>
+            <div class="acc reveal delay-2">
+              <button type="button" aria-expanded="false">Do you work with other contractors in my trade and market?</button>
+              <div class="panel"><p>No. Every estimate is exclusive to you, and we won’t sign a second contractor in your trade in your service area while you’re a client. These homeowners haven’t been shopped to three competitors before you show up.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="founder" id="about">
+        <div class="founder-portrait reveal"><div class="founder-ring"></div>
+          <!-- ABOUT: Marco headshot -->
+          <img src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a8cdad61ef6960779eaad65.png" alt="Marco Ortiz portrait" loading="lazy" decoding="async">
+          <span>FOUNDER / OPERATOR</span>
+        </div>
+        <div class="founder-story reveal delay-1"><p class="label">MEET MARCO ORTIZ</p><h2>Built for the contractor who knows the job is only half the sale.</h2><p>The first impression, the follow-up, the clarity of the offer, and the estimate experience all shape the quality of the work you get to do. Marco helps contractors make those moments more deliberate.</p><div class="quote">“The best projects start long before the first day on the job.”</div><a class="button button-outline" href="#book">PLAN YOUR NEXT 90 DAYS ↘</a></div>
+      </section>
+
+      <section class="booking" id="book"><div class="booking-grid"></div><div class="shell booking-inner"><div class="booking-copy reveal"><p class="label">YOUR BLUEPRINT SESSION</p><h2>See if the system fits<br><em>the market in front of you.</em></h2><p>Choose a time for a short strategy call. We will look at your current lead flow, your trade, and your growth target together.</p><div class="checks"><span>Contractor specific conversation</span><span>No generic agency audit</span></div><button class="button" type="button" data-booking-open>BOOK YOUR STRATEGY CALL ↗</button><p class="booking-note">Choose a time without leaving this page.</p></div></div></section>
+    </main>
+
+    <footer><div class="shell footer-inner"><div class="footer-logo"><img class="markbox" src="https://assets.cdn.filesafe.space/dEzapcnAgfgyAHaC9Kds/media/6a7c78bafe4291bd10e32061.png" alt="Mach 1 Growth Firm" loading="lazy" decoding="async"><span>MACH 1<br>GROWTH FIRM</span></div><p>THE CONTRACTOR BLUEPRINT SYSTEM FOR ESTABLISHED CONTRACTORS IN EVERY TRADE.</p><a href="#top">BACK TO TOP ↑</a></div></footer>
+
+    <div class="booking-modal" id="booking-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
+      <div class="booking-panel" role="document"><span id="booking-modal-title" class="sr-only">Book a strategy call</span><button class="booking-close" type="button" aria-label="Close booking form" data-booking-close>×</button><iframe class="ghl-calendar" src="https://api.leadconnectorhq.com/widget/booking/gUBtJXQ2u027MUmPyGOC" title="Mach 1 Growth Firm strategy call calendar"></iframe><p class="booking-fallback">Calendar not loading? <a id="booking-fallback-link" href="https://api.leadconnectorhq.com/widget/booking/gUBtJXQ2u027MUmPyGOC" target="_blank" rel="noopener">Open it in a new tab</a></p></div>
+    </div>
+  </div>
+  <script>
+    /* intro animations run immediately, no loading gate */
+    document.body.classList.add('is-loaded');
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('show');observer.unobserve(entry.target)}}),{threshold:.14});
+    document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+    /* force a visible first-frame preview on mobile browsers that otherwise
+       show a blank box until the video is tapped */
+    document.querySelectorAll('.video-shot video').forEach(video=>{
+      const showFrame=()=>{ if(video.currentTime===0){ try{ video.currentTime=0.1 }catch(e){} } };
+      video.addEventListener('loadedmetadata',showFrame);
+      if(video.readyState>=1)showFrame();
+    });
+
+    /* faq accordion */
+    document.querySelectorAll('.acc').forEach(item=>{
+      const button=item.querySelector('button');
+      const panel=item.querySelector('.panel');
+      button.addEventListener('click',()=>{
+        const isOpen=item.classList.toggle('open');
+        button.setAttribute('aria-expanded',isOpen?'true':'false');
+        panel.style.maxHeight=isOpen?panel.scrollHeight+'px':'0px';
+      });
+    });
+
+    /* calendar: carry UTM / ad params through to every booking embed */
+    const CALENDAR_BASE='https://api.leadconnectorhq.com/widget/booking/gUBtJXQ2u027MUmPyGOC';
+    const calendarParams=new URLSearchParams(location.search);
+    const calendarUrl=CALENDAR_BASE+(calendarParams.toString()?'?'+calendarParams.toString():'');
+    document.querySelectorAll('.ghl-calendar, .ghl-calendar-hero').forEach(frame=>{frame.src=calendarUrl});
+    const heroFallbackLink=document.getElementById('hero-cal-fallback-link');
+    if(heroFallbackLink)heroFallbackLink.href=calendarUrl;
+    const fallbackLink=document.getElementById('booking-fallback-link');
+    if(fallbackLink)fallbackLink.href=calendarUrl;
+
+    /* calendar popup (used by the bottom booking button) */
+    const bookingModal=document.getElementById('booking-modal');
+    const openBooking=()=>{bookingModal.setAttribute('aria-hidden','false');document.body.classList.add('booking-open');document.querySelector('[data-booking-close]').focus({preventScroll:true})};
+    const closeBooking=()=>{bookingModal.setAttribute('aria-hidden','true');document.body.classList.remove('booking-open')};
+    document.querySelectorAll('[data-booking-open]').forEach(button=>button.addEventListener('click',openBooking));
+    document.querySelectorAll('[data-booking-close]').forEach(button=>button.addEventListener('click',closeBooking));
+    bookingModal.addEventListener('click',event=>{if(event.target===bookingModal)closeBooking()});
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&bookingModal.getAttribute('aria-hidden')==='false')closeBooking()});
+  </script>
+</body>
+</html>
