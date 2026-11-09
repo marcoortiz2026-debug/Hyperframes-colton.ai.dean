@@ -99,6 +99,41 @@
     .scroll-cue svg{width:14px;height:14px;animation:bob 1.8s ease-in-out infinite}
     @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 
+    /* ---------- next steps (under the VSL) ---------- */
+    .next-steps{width:min(1000px,100%);margin:44px auto 0;text-align:left}
+    .next-steps>.eyebrow{display:flex;justify-content:center}
+    .ns-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;margin-top:22px}
+    .ns-list{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:none}
+    .ns-step{display:flex;align-items:center;gap:16px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--bg-2);transition:border-color .2s var(--ease),transform .2s var(--ease)}
+    @media(hover:hover){.ns-step:hover{border-color:rgba(90,160,255,.5);transform:translateX(3px)}}
+    .ns-ico{flex:0 0 auto;display:grid;place-items:center;width:46px;height:46px;border-radius:12px;border:1px solid rgba(90,160,255,.4);background:var(--panel)}
+    .ns-ico svg{width:22px;height:22px;stroke:var(--blue-hi);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+    .ns-last .ns-ico{background:var(--blue);border-color:var(--blue)}
+    .ns-last .ns-ico svg{stroke:#fff}
+    .ns-last{border-color:rgba(90,160,255,.45);background:rgba(47,123,255,.08)}
+    .ns-txt{display:block;min-width:0}
+    .ns-num{display:block;color:var(--electric);font:800 10px/1 var(--display);letter-spacing:.16em}
+    .ns-txt b{display:block;margin-top:6px;color:var(--white);font:800 18px/1.15 var(--display);font-stretch:106%;letter-spacing:-.01em}
+    .ns-txt>span:last-child{display:block;margin-top:3px;color:var(--muted-2);font-size:14px;line-height:1.4}
+    .ns-confirm{position:relative;padding:10px 6px 0}
+    .nc-card{position:relative;padding:22px;border-radius:18px;background:#f4f7fb;color:#0b0d10;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 80px -20px var(--blue-glow);transform:rotate(-2deg)}
+    .nc-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .nc-app{color:#5b6472;font:700 11px/1 var(--display);letter-spacing:.12em;text-transform:uppercase}
+    .nc-badge{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:#d9f8ea;color:#0f7a4b;font:800 11px/1 var(--display);letter-spacing:.06em;text-transform:uppercase}
+    .nc-badge svg,.nc-rsvp svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .nc-date{display:grid;place-items:center;width:58px;height:62px;margin-top:18px;border-radius:12px;overflow:hidden;background:#fff;border:1px solid #dfe5ee;text-align:center}
+    .nc-date span{display:block;width:100%;padding:5px 0;background:var(--blue);color:#fff;font:800 10px/1 var(--display);letter-spacing:.14em}
+    .nc-date b{color:var(--blue);font:900 26px/1 var(--display)}
+    .nc-card h3{margin-top:14px;color:#0b0d10;font-size:22px;line-height:1.12;letter-spacing:-.015em}
+    .nc-meta{margin:8px 0 0;color:#5b6472;font-size:14px}
+    .nc-rsvp{display:flex;align-items:center;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid #dfe5ee;font:700 13px/1 var(--display)}
+    .nc-rsvp>span{margin-right:auto;color:#5b6472}
+    .nc-rsvp b,.nc-rsvp i{display:inline-flex;align-items:center;gap:5px;padding:8px 12px;border-radius:999px;font-style:normal}
+    .nc-rsvp b{background:var(--blue);color:#fff}
+    .nc-rsvp i{border:1px solid #d4dae4;color:#8a93a1}
+    .nc-text{position:relative;width:fit-content;margin:14px -6px 0 auto;max-width:250px;padding:12px 14px;border-radius:16px 16px 4px 16px;background:var(--blue);color:#fff;font-size:13.5px;line-height:1.4;box-shadow:0 16px 36px rgba(0,0,0,.5);transform:rotate(1.5deg)}
+    .nc-from{display:block;margin-bottom:3px;color:rgba(255,255,255,.75);font:800 10px/1 var(--display);letter-spacing:.1em;text-transform:uppercase}
+
     /* ---------- generic section ---------- */
     .section{position:relative;padding:120px 0}
     .section-head{max-width:760px;margin:0 auto 56px;text-align:center}
@@ -236,6 +271,8 @@
       .result.featured .result-head{padding:28px 24px 14px}
       .result.featured .result-who{padding:0 24px 8px}
       .agenda{grid-template-columns:1fr}
+      .ns-grid{grid-template-columns:1fr;gap:20px}
+      .ns-confirm{max-width:420px;margin:0 auto}
       .faq-card{grid-template-columns:1fr;gap:16px}
     }
     @media(max-width:640px){
@@ -286,6 +323,12 @@
       .result.featured .result-body{padding:0 18px}
       .result.featured .proof-shot.video-shot{margin:14px 0 18px}
       .checklist{grid-template-columns:1fr}
+      .next-steps{margin-top:34px}
+      .ns-step{padding:12px 14px;gap:14px}
+      .ns-txt b{font-size:17px}
+      .nc-card{padding:18px}
+      .nc-card h3{font-size:20px}
+      .nc-text{margin-right:0;max-width:240px}
       .faq-list{gap:16px}
       .faq-card{padding:18px 16px 16px;gap:14px}
       .faq-q h3{margin-top:10px;font-size:22px}
@@ -334,15 +377,27 @@
           </div>
         </div>
 
-        <div class="proof-strip hero-in d4" aria-label="Client results">
-          <a href="#result-christian"><b>$300K+</b><span>Christian · <em>revenue</em>, month 1</span></a>
-          <a href="#result-carlos"><b>$50K</b><span>Carlos · <em>profit</em>, 2 weeks</span></a>
-          <a href="#result-liz"><b>$180K</b><span>Liz &amp; her dad · <em>revenue</em>, month 1</span></a>
+        <div class="next-steps hero-in d4">
+          <p class="eyebrow">What happens next</p>
+          <div class="ns-grid">
+            <ol class="ns-list" role="list">
+            <li><a class="ns-step" href="#top"><span class="ns-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg></span><span class="ns-txt"><span class="ns-num">STEP 01</span><b>Watch this video</b><span>Under a minute. Hit play above.</span></span></a></li>
+            <li><a class="ns-step" href="#results"><span class="ns-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg></span><span class="ns-txt"><span class="ns-num">STEP 02</span><b>Watch the testimonials</b><span>Real HVAC owners. Real numbers.</span></span></a></li>
+            <li><a class="ns-step" href="#faq"><span class="ns-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/></svg></span><span class="ns-txt"><span class="ns-num">STEP 03</span><b>Watch the 3 FAQs</b><span>The guarantee, the price, and who it’s for.</span></span></a></li>
+            <li><a class="ns-step ns-last" href="#next"><span class="ns-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l2 2 4-4"/></svg></span><span class="ns-txt"><span class="ns-num">STEP 04</span><b>Confirm your call</b><span>Accept the calendar invite and reply to our text.</span></span></a></li>
+            </ol>
+            <div class="ns-confirm" aria-label="Example of a confirmed strategy call">
+              <div class="nc-card">
+                <div class="nc-top"><span class="nc-app">Calendar invite</span><span class="nc-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Confirmed</span></div>
+                <div class="nc-date"><span>CALL</span><b>✓</b></div>
+                <h3>Strategy Call<br>with Mach 1 Growth Firm</h3>
+                <p class="nc-meta">Your booked time · Video call</p>
+                <div class="nc-rsvp"><span>Going?</span><b class="yes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Yes</b><i>No</i><i>Maybe</i></div>
+              </div>
+              <div class="nc-text"><span class="nc-from">Mach 1 Growth Firm</span>Your strategy call is confirmed. See you there!</div>
+            </div>
+          </div>
         </div>
-
-        <a class="scroll-cue hero-in d4" href="#faq">Guarantee, price &amp; how it works
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-        </a>
       </div>
     </section>
 
